@@ -1,0 +1,11 @@
+data/*
+.idea/
+*.iml
+*.pyc
+build/
+config.py
+*.log
+*.synctex.gz
+*.aux
+*.pdf
+interview.tex
