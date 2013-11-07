@@ -4,9 +4,7 @@ import itertools
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-import MySQLdb
-from scipy import stats
-
+import math
 
 def read_github():
     contributors = {}
@@ -14,9 +12,13 @@ def read_github():
     popularity = {}
     csvreader = csv.DictReader(open('../data/combined.csv'), delimiter=',')
     for row in csvreader:
-        watchers = row['repository_watchers']
+        if row['repository_fork'] == 'true':
+            continue
+
+        forks = int(row['repository_forks'])
+        watchers = int(row['repository_watchers'])
         project = row['repository_url']
-        popularity[project] = watchers
+        popularity[project] = int(math.sqrt(forks * watchers))
         contributor = row['actor_attributes_login']
         if contributor not in contributors:
             contributors[contributor] = []
@@ -62,6 +64,8 @@ def compute_random_graph(graph):
 
     node_range = range(0,nodes)
 
+    random_edges = 0
+
     last_node = None
     for i in node_range:
         if last_node is None:
@@ -70,12 +74,13 @@ def compute_random_graph(graph):
             graph_r.add_edge(last_node,i)
             last_node = i
 
-    while graph_r.number_of_edges() < edges:
+    while random_edges < edges:
         node1 = random.choice(node_range)
         node2 = random.choice(node_range)
 
         if node1 != node2:
             graph_r.add_edge(node1,node2)
+            random_edges += 1
 
     return graph_r
 
@@ -99,6 +104,7 @@ def graph(name, contributors_projects, popularity):
 
     q = []
     popularity_score = []
+    small_worldness = []
 
     def sample_graphs(subgraphs):
         return subgraphs
@@ -107,6 +113,12 @@ def graph(name, contributors_projects, popularity):
         if subgraph.number_of_nodes() < 3: continue
 
         graph_q = compute_q(subgraph)
+
+        random_graph = compute_random_graph(subgraph)
+
+        random_q = compute_q(random_graph)
+
+        small_worldness.append(get_small_worldness(graph_q, random_q))
 
         q.append(graph_q['q'])
 
@@ -122,8 +134,8 @@ def graph(name, contributors_projects, popularity):
 
         popularity_score.append(avg_popularity)
 
-    bins = [round(float(i)*.1,2)/2 for i in range(0,21)]
-    #bins = [round(float(i)*.1,1) for i in range(0,11)]
+    #bins = [round(float(i)*.1,2)/2 for i in range(0,21)]
+    bins = [round(float(i)*.1,1) for i in range(0,11)]
 
     values = [[] for _ in bins]
 
@@ -133,38 +145,40 @@ def graph(name, contributors_projects, popularity):
         values[idx].append(score)
 
     create_graph(name, bins, values)
-    create_histogram(name, q)
+    create_histogram(name + "-q", q, log_y_scale=True)
+    create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None and x < 10])
     highest_performing(name, bins, values)
 
-def create_histogram(filename, q):
+def create_histogram(filename, data, log_y_scale=False):
     fig = plt.figure()
-    plt.yscale('log', nonposy='clip')
-    plt.hist(q)
+    if log_y_scale:
+        plt.yscale('log', nonposy='clip')
+    plt.hist(data)
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-histo.png")
     plt.close(fig)
 
 def highest_performing(filename, bins, values):
-    sorted_y = sorted(sum(values,[]), reverse=True)
-
-    # throw away the low-scoring items
-    highest_y = set(sorted_y[int(len(sorted_y)*.50):])
-
     popular_bins = []
+    unpopular_bins = []
 
     for bin,value in zip(bins,values):
-        if len(value) < 2: continue
-        percentage = len([v for v in value if v in highest_y ])
-        print str(percentage) + " - " + str(len(value)) + " - " + str(float(percentage)/len(value))
-        for _ in range(int( (float(percentage) / len(value)) * 100 )):
+        if len(value) < 5: continue
+        popular_repos = len([v for v in value if v > 6])
+        unpopular_repos = len([v for v in value if v <= 1 ])
+        print str(bin) + " " + str(popular_repos) + " " + str(unpopular_repos) + " " + str(len(value))
+        for _ in range(int( (float(popular_repos) / len(value)) * 100 )):
             popular_bins.append(bin)
+        for _ in range(int( (float(unpopular_repos) / len(value)) * 100 )):
+            unpopular_bins.append(bin)
 
-    fig = plt.figure()
-    plt.hist(popular_bins, len(bins))
-    plt.show()
-    F = plt.gcf()
-    F.savefig("../paper/images/"+filename+"-q.png")
-    plt.close(fig)
+    for name, data in zip(["popular","unpopular"], [popular_bins,unpopular_bins]):
+        fig = plt.figure()
+        plt.hist(data, len(bins))
+        F = plt.gcf()
+        F.savefig("../paper/images/"+filename+"-"+name+".png")
+        plt.show()
+        plt.close(fig)
 
 def create_graph(filename, x, y):
     avg = [np.mean(j, axis=None) for j in y]
@@ -180,4 +194,3 @@ def create_graph(filename, x, y):
 
 github_results = read_github()
 graph("github", (github_results[0], github_results[1]),github_results[2] )
-
