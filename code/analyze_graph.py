@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 import math
+import table
 
 def read_github():
     contributors = {}
@@ -56,9 +57,7 @@ def compute_q(graph):
 
     return {"q":cc/pl,"pl":pl,"cc":cc}
 
-def compute_random_graph(graph):
-    nodes = graph.number_of_nodes()
-    edges = graph.number_of_edges()
+def compute_random_graph(nodes, edges):
 
     graph_r = nx.Graph()
 
@@ -103,24 +102,37 @@ def graph(name, contributors_projects, popularity):
                 G.add_edge(e0,e1)
 
     q = []
+    cc = []
+    pl = []
     popularity_score = []
     small_worldness = []
+    subgraph_node_number = []
+    subgraph_edge_number = []
 
     def sample_graphs(subgraphs):
         return subgraphs
 
-    for subgraph in sample_graphs(nx.connected_component_subgraphs(G)):
+    subgraphs = sample_graphs(nx.connected_component_subgraphs(G))
+    for subgraph in subgraphs:
         if subgraph.number_of_nodes() < 3: continue
+
+        nodes = subgraph.number_of_nodes()
+        edges = subgraph.number_of_edges()
+
+        subgraph_node_number.append(nodes)
+        subgraph_edge_number.append(edges)
 
         graph_q = compute_q(subgraph)
 
-        random_graph = compute_random_graph(subgraph)
+        random_graph = compute_random_graph(nodes, edges)
 
         random_q = compute_q(random_graph)
 
         small_worldness.append(get_small_worldness(graph_q, random_q))
 
         q.append(graph_q['q'])
+        cc.append(graph_q['cc'])
+        pl.append(graph_q['pl'])
 
         graph_repos = set()
         for repos in [contributors[node] for node in subgraph.nodes()]:
@@ -148,6 +160,22 @@ def graph(name, contributors_projects, popularity):
     create_histogram(name + "-q", q, log_y_scale=True)
     create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None and x < 10])
     highest_performing(name, bins, values)
+
+    write_table("subgraphs_summary",
+                table.create_table("Summary", "Summary", len(subgraphs),
+                                   {
+                                       "Q": q,
+                                       "CC": cc,
+                                       "PL": pl,
+                                       "Popularity": popularity_score,
+                                       "Small World": [x for x in small_worldness if x is not None],
+                                       "Nodes": subgraph_node_number,
+                                       "Edges": subgraph_edge_number
+                                   }))
+
+def write_table(file_name, table_tex):
+    with open("../paper/tables/"+file_name+".tex", 'w') as the_file:
+        the_file.write(table_tex)
 
 def create_histogram(filename, data, log_y_scale=False):
     fig = plt.figure()
