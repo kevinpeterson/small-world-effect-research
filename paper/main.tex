@@ -26,12 +26,23 @@ Team cohesion and the dynamics of team forming are important parts of any projec
 \noindent \\\textbf{Keywords.} Git, GitHub, Open Source
 
 \section{Introduction}
+A social network is a graph people and the interactions between them. The dynamics of social networks have proved to be an important research topic for many different areas of study, from academic publication\cite{barabasi2002evolution}, to the success of broadway musicals\cite{uzzi2005collaboration}. In general, a social network is important to understanding how ideas and influence are spread\cite{kempe2003maximizing}, from which we can investigate the best conditions for optimal group perfomance within these networks.
+
+A `small world' network is a social network characterized by high clustering of graph nodes paired with a short average path between nodes \cite{watts1998collective}. Milgram, in is seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}. From these observations, hypotheses can be made as to the efficiency of how knowledge is transfered in these groups\cite{latora2001efficient}. In this work, we investigate the `small world' phenomenon and how it relates to Open Source Project Teams.
 
 
-\subsection{Hypotheses}
+\subsection{Hypothesis}
 
+\textit{Open Source Project Teams will perform best at moderate levels of $Q$. This performance, measured by the number of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}. }
 
 \section{Methods}
+
+We calcluate the \textit{Clustering Coefficient} (or $CC$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
+\[cc = 3 \times \frac{\text{number of triangles}}
+                    {\text{number of connected triples}}\]
+
+Also, measuring \textit{Path Length} ($PL$) allows us to gauge how far removed developers in the graph are from one another. For example 
+
 \subsection{Collection and Storage}
 
 \subsection{Analysis}
@@ -39,6 +50,9 @@ Team cohesion and the dynamics of team forming are important parts of any projec
 \section{Results}
 
 \subsection{Quantitative}
+
+\input{tables/subgraphs_summary}
+
 
 \subsection{Qualitative}
 
