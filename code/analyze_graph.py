@@ -7,6 +7,48 @@ import numpy as np
 import math
 import table
 
+def read_contributors():
+    contributors = {}
+
+    fp = file('../data/fcProjectAuthors2013-Sep.txt')
+    csvreader = csv.DictReader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
+    for row in csvreader:
+        contributor = row['author_name'].strip()
+        project = row['project_id'].strip()
+        if contributor not in contributors:
+            contributors[contributor] = []
+
+        contributors[contributor].append(project)
+    fp.close()
+
+    return contributors
+
+
+def read_stats():
+    popularity = {}
+
+    fp = file('../data/fcProjectStats2013-Sep.txt')
+    csvreader = csv.DictReader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
+    for row in csvreader:
+        project_id = row['project_id'].strip()
+        popularity_score = row['popularity_score'].strip()
+        vitality_score = row['vitality_score'].strip()
+        subscriptions = row['subscriptions'].strip()
+        rank = row['popularity_rank'].strip()
+
+        score = 0
+        try:
+            score = float(popularity_score)
+        except ValueError, e:
+            print "ERROR calculating project score: %s" % str(popularity_score)
+            score = 0
+
+        if project_id not in popularity: popularity[project_id] = score
+
+    fp.close()
+
+    return popularity
+
 def read_github():
     contributors = {}
     projects = {}
@@ -84,21 +126,16 @@ def compute_random_graph(nodes, edges):
     return graph_r
 
 
-def graph(name, contributors_projects, popularity):
-
-    contributors = contributors_projects[0]
-    projects = contributors_projects[1]
-
+def graph(name, contributors, popularity):
     G = nx.Graph()
 
-    for project in projects:
-        project_contributors = projects[project]
-        if len(project_contributors) == 1:
-            G.add_node(project_contributors[0])
-        else:
-            for combination in itertools.combinations(projects[project], r=2):
-                e0 = combination[0]
-                e1 = combination[1]
+    for contributor in contributors:
+        contributor_projects = contributors[contributor]
+
+        for combination in itertools.combinations(contributor_projects, r=2):
+            e0 = combination[0]
+            e1 = combination[1]
+            if not G.has_edge(e0,e1) and not G.has_edge(e1,e0):
                 G.add_edge(e0,e1)
 
     q = []
@@ -112,9 +149,10 @@ def graph(name, contributors_projects, popularity):
     def sample_graphs(subgraphs):
         return subgraphs
 
+    N = 0
     subgraphs = sample_graphs(nx.connected_component_subgraphs(G))
     for subgraph in subgraphs:
-        if subgraph.number_of_nodes() < 3: continue
+        N += 1
 
         nodes = subgraph.number_of_nodes()
         edges = subgraph.number_of_edges()
@@ -134,19 +172,16 @@ def graph(name, contributors_projects, popularity):
         cc.append(graph_q['cc'])
         pl.append(graph_q['pl'])
 
-        graph_repos = set()
-        for repos in [contributors[node] for node in subgraph.nodes()]:
-            for repo in repos: graph_repos.add(repo)
-
         try:
-            avg_popularity = np.mean([float(popularity[node]) for node in graph_repos])
+            avg_popularity = np.mean([float(popularity[node]) for node in subgraph])
         except ValueError, e:
             print "ERROR calculating popularity"
             avg_popularity = 0
 
         popularity_score.append(avg_popularity)
 
-    #bins = [round(float(i)*.1,2)/2 for i in range(0,21)]
+    print popularity_score
+
     bins = [round(float(i)*.1,1) for i in range(0,11)]
 
     values = [[] for _ in bins]
@@ -158,11 +193,11 @@ def graph(name, contributors_projects, popularity):
 
     create_graph(name, bins, values)
     create_histogram(name + "-q", q, log_y_scale=True)
-    create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None and x < 10])
+    create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None])
     highest_performing(name, bins, values)
 
     write_table("subgraphs_summary",
-                table.create_table("Summary", "Summary", len(subgraphs),
+                table.create_table("Summary", "Summary", N,
                                    {
                                        "Q": q,
                                        "CC": cc,
@@ -181,7 +216,7 @@ def create_histogram(filename, data, log_y_scale=False):
     fig = plt.figure()
     if log_y_scale:
         plt.yscale('log', nonposy='clip')
-    plt.hist(data)
+    plt.hist(data, color="0.75")
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-histo.png")
     plt.close(fig)
@@ -192,8 +227,8 @@ def highest_performing(filename, bins, values):
 
     for bin,value in zip(bins,values):
         if len(value) < 5: continue
-        popular_repos = len([v for v in value if v > 6])
-        unpopular_repos = len([v for v in value if v <= 1 ])
+        popular_repos = len([v for v in value if v > 100])
+        unpopular_repos = len([v for v in value if v < 50 ])
         print str(bin) + " " + str(popular_repos) + " " + str(unpopular_repos) + " " + str(len(value))
         for _ in range(int( (float(popular_repos) / len(value)) * 100 )):
             popular_bins.append(bin)
@@ -202,7 +237,7 @@ def highest_performing(filename, bins, values):
 
     for name, data in zip(["popular","unpopular"], [popular_bins,unpopular_bins]):
         fig = plt.figure()
-        plt.hist(data, len(bins))
+        plt.hist(data, len(bins), color="0.75")
         F = plt.gcf()
         F.savefig("../paper/images/"+filename+"-"+name+".png")
         plt.show()
@@ -213,12 +248,10 @@ def create_graph(filename, x, y):
     median = [np.median(j) for j in y]
 
     fig = plt.figure()
-    plt.plot(x,avg,'b-')
-    plt.plot(x,median,'r-')
+    plt.plot(x,avg,'bo')
+    plt.plot(x,median,'ro')
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-graph.png")
     plt.close(fig)
 
-
-github_results = read_github()
-graph("github", (github_results[0], github_results[1]),github_results[2] )
+graph("freecode", read_contributors(), read_stats())
