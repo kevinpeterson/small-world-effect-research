@@ -32,11 +32,7 @@ def read_stats():
     for row in csvreader:
         project_id = row['project_id'].strip()
         popularity_score = row['popularity_score'].strip()
-        vitality_score = row['vitality_score'].strip()
-        subscriptions = row['subscriptions'].strip()
-        rank = row['popularity_rank'].strip()
 
-        score = 0
         try:
             score = float(popularity_score)
         except ValueError, e:
@@ -200,10 +196,10 @@ def graph(name, contributors, popularity):
                 table.create_table("Summary", "Summary", N,
                                    {
                                        "Q": q,
-                                       "CC": cc,
-                                       "PL": pl,
+                                       "$C^\Delta$": cc,
+                                       "L": pl,
                                        "Popularity": popularity_score,
-                                       "Small World": [x for x in small_worldness if x is not None],
+                                       "$S^\Delta$": [x for x in small_worldness if x is not None],
                                        "Nodes": subgraph_node_number,
                                        "Edges": subgraph_edge_number
                                    }))
@@ -240,7 +236,6 @@ def highest_performing(filename, bins, values):
         plt.hist(data, len(bins), color="0.75")
         F = plt.gcf()
         F.savefig("../paper/images/"+filename+"-"+name+".png")
-        plt.show()
         plt.close(fig)
 
 def create_graph(filename, x, y):
@@ -248,8 +243,8 @@ def create_graph(filename, x, y):
     median = [np.median(j) for j in y]
 
     fig = plt.figure()
-    plt.plot(x,avg,'bo')
-    plt.plot(x,median,'ro')
+    plt.plot(x,avg,'b-')
+    plt.plot(x,median,'r-')
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-graph.png")
     plt.close(fig)

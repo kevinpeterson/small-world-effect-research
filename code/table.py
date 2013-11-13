@@ -1,12 +1,14 @@
 import numpy as np
 from collections import OrderedDict
 
+sigdigits = 2
+
 summary_functions = OrderedDict(
-    [("Mean", lambda x : round(np.mean(x),3)),
-     ("Median", lambda x : round(np.median(x),3)),
-     ("Max", lambda x : round(np.max(x),3)),
-     ("Min", lambda x : round(np.min(x),3)),
-     ("Std", lambda x : round(np.std(x),3))]
+    [("Mean", lambda x : round(np.mean(x),sigdigits)),
+     ("Med", lambda x : round(np.median(x),sigdigits)),
+     ("Max", lambda x : round(np.max(x),sigdigits)),
+     ("Min", lambda x : round(np.min(x),sigdigits)),
+     ("Std", lambda x : round(np.std(x),sigdigits))]
 )
 
 def create_table(title,label,N,stats,functions=summary_functions):

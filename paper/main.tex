@@ -8,6 +8,7 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{mathrsfs}
+\usepackage{tikz}
 
 \title{
 The Small World Network Effect in Open Source Project Teams
@@ -37,16 +38,66 @@ A `small world' network is a social network characterized by high clustering of 
 
 \section{Methods}
 
-We calcluate the \textit{Clustering Coefficient} (or $CC$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
-\[CC = 3 \times \frac{\text{number of triangles}}
-                    {\text{number of connected triples}}\]
-
-Also, measuring \textit{Path Length} ($PL$) allows us to gauge how far removed developers in the graph are from one another. For example 
-
 \subsection{Collection and Storage}
+Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. The data collection used was collected from the popular open source project site FreeCode\footnote{http://freecode.com/}, and contains data up to September, 2013.
 
 \subsection{Analysis}
+Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
 
+We calcluate the \textit{Clustering Coefficient} (or $C^\delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
+\[C^\delta = 3 \times \frac{\text{number of triangles}}
+                    {\text{number of connected triples}}\]
+
+Also, measuring \textit{Path Length} ($L$) allows us to gauge how far removed developers in the graph are from one another. For example 
+
+\begin{tikzpicture}
+  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  \node (n1) at (15,8) {1};
+  \node (n2) at (12,6)  {2};
+  \node (n3) at (9,5)  {3};
+  \node (n4) at (6,5)  {4};
+  
+  \draw ({n1}) -- ({n2});
+  \draw ({n2}) -- ({n3});
+  \draw ({n3}) -- ({n4});
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  \node (n1) at (15,8) {1};
+  \node (n2) at (12,5)  {2};
+  \node (n3) at (9,5)  {3};
+  \node (n4) at (11,8)  {4};
+  
+  \draw ({n1}) -- ({n2});
+  \draw ({n2}) -- ({n3});
+  \draw ({n3}) -- ({n4});
+  \draw ({n1}) -- ({n4});
+  \draw ({n1}) -- ({n3});
+  \draw ({n2}) -- ({n4});
+\end{tikzpicture}
+
+\begin{tikzpicture}
+  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  \node (n1) at (15,7) {1};
+  \node (n2) at (12,5)  {2};
+  \node (n3) at (8,7)  {3};
+  \node (n4) at (11,8)  {4};
+  
+  \draw ({n1}) -- ({n2});
+  \draw ({n3}) -- ({n4});
+  \draw ({n1}) -- ({n4});
+  \draw ({n2}) -- ({n4});
+\end{tikzpicture}
+
+\textit{Small-World-ness}
+
+\[\gamma^{\Delta}_g = \frac{C^{\Delta}_g }{C^{\Delta}_{rand} } \]
+
+\[\lambda_g = \frac{L_g }{L_{rand} } \]
+
+\[S^\Delta = \frac{\gamma^{\Delta}_g }{\lambda_g} \]
+ 
 \section{Results}
 
 \subsection{Quantitative}
@@ -54,23 +105,23 @@ Also, measuring \textit{Path Length} ($PL$) allows us to gauge how far removed d
 \input{tables/subgraphs_summary}
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{images/github-popular.png}
+\includegraphics[width=0.5\textwidth]{images/freecode-popular.png}
 \end{center}
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{images/github-unpopular.png}
+\includegraphics[width=0.5\textwidth]{images/freecode-unpopular.png}
 \end{center}
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{images/github-q-histo.png}
+\includegraphics[width=0.5\textwidth]{images/freecode-q-histo.png}
 \end{center}
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{images/github-smallworld-histo.png}
+\includegraphics[width=0.5\textwidth]{images/freecode-smallworld-histo.png}
 \end{center}
 
 \begin{center}
-\includegraphics[width=0.5\textwidth]{images/github-graph.png}
+\includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
 \end{center}
 
 \subsection{Qualitative}
