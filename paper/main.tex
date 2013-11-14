@@ -9,6 +9,8 @@
 \usepackage{amsmath}
 \usepackage{mathrsfs}
 \usepackage{tikz}
+\usetikzlibrary{positioning}
+\setlength{\abovecaptionskip}{2pt}
 
 \title{
 The Small World Network Effect in Open Source Project Teams
@@ -44,18 +46,61 @@ Data was collected using the freely available FLOSSmole\cite{floss2006} data set
 \subsection{Analysis}
 Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
 
+\textit{Graph Structure}
+A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by $G=(P,C,E)$, where $P \cap C = \emptyset$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa.
+
+\begin{figure}
+\label{fig:example_graphs}
+\centering
+\begin{tikzpicture}
+\tikzset{P/.style={circle,fill=lightgray!20}}
+\tikzset{C/.style={circle,fill=black!20}}
+
+ [scale=.5,auto=left]
+  \node[P] (p1) at (-5,3)  {$P_1$};
+  \node[P] (p2) at (-5,2)  {$P_2$};
+  \node[P] (p3) at (-5,1)  {$P_3$};
+  \node[P] (p4) at (-5,0)  {$P_4$};
+
+  \node[C] (c1) at (-2,3)  {$C_1$};
+  \node[C] (c2) at (-2,2)  {$C_2$};
+  \node[C] (c3) at (-2,1)  {$C_3$};
+  \node[C] (c4) at (-2,0)  {$C_4$};
+  
+  \draw ({p1}) -- ({c1});
+  \draw ({p1}) -- ({c2});
+  \draw ({p2}) -- ({c2});
+  \draw ({p2}) -- ({c4});
+  \draw ({p3}) -- ({c3});
+  \draw ({p4}) -- ({c3});
+  \node[draw=none,fill=none,rectangle,left=1mm of p1] {Projects}; 
+  \node[draw=none,fill=none,rectangle,right=1mm of c1] {Contributors}; 
+\end{tikzpicture}
+\caption{A caption.}
+\end{figure}
+
+This is a typical representation found in social and collaboration networks\cite{ramasco2004self}.
+
+
+The collected data was organized into a graph structure $G$, with the nodes representing the projects and the edges representing one or more shared developer between projects.
+
+
 We calcluate the \textit{Clustering Coefficient} (or $C^\delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
 \[C^\delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
-Also, measuring \textit{Path Length} ($L$) allows us to gauge how far removed developers in the graph are from one another. For example 
+Also, measuring \textit{Path Length} ($L$) allows us to determine how far removed developers in the graph are from one another. For example 
 
+\begin{figure}
+\label{fig:example_graphs}
+\centering
 \begin{tikzpicture}
   [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
   \node (n1) at (15,8) {1};
   \node (n2) at (12,6)  {2};
   \node (n3) at (9,5)  {3};
   \node (n4) at (6,5)  {4};
+  \node[draw=none,fill=none,rectangle,right=1mm of n1] {$C^\Delta = 0.0$}; 
   
   \draw ({n1}) -- ({n2});
   \draw ({n2}) -- ({n3});
@@ -64,10 +109,12 @@ Also, measuring \textit{Path Length} ($L$) allows us to gauge how far removed de
 
 \begin{tikzpicture}
   [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+
   \node (n1) at (15,8) {1};
   \node (n2) at (12,5)  {2};
   \node (n3) at (9,5)  {3};
   \node (n4) at (11,8)  {4};
+  \node[draw=none,fill=none,rectangle,right=1mm of n1] {$C^\Delta = 1.0$}; 
   
   \draw ({n1}) -- ({n2});
   \draw ({n2}) -- ({n3});
@@ -83,12 +130,15 @@ Also, measuring \textit{Path Length} ($L$) allows us to gauge how far removed de
   \node (n2) at (12,5)  {2};
   \node (n3) at (8,7)  {3};
   \node (n4) at (11,8)  {4};
-  
+  \node[draw=none,fill=none,rectangle,right=1mm of n1] {$C^\Delta = 0.6$}; 
+
   \draw ({n1}) -- ({n2});
   \draw ({n3}) -- ({n4});
   \draw ({n1}) -- ({n4});
   \draw ({n2}) -- ({n4});
 \end{tikzpicture}
+\caption{A caption.}
+\end{figure}
 
 \textit{Small-World-ness}
 
@@ -104,29 +154,57 @@ Also, measuring \textit{Path Length} ($L$) allows us to gauge how far removed de
 
 \input{tables/subgraphs_summary}
 
+Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. First, $S^\Delta > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
+
+$Q$ and $C^\Delta$ both indicate a non-normal distribution, as shown by the large standard deviation. This observation indicates a propensity towards the extremes of these measurements. This is further reinforced by the distribution of $Q$ shown in figure \ref{fig:q_distribution}. This figure indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of either 0 or 1.\\
+
+Exploring this phenomenon further, follows that most graphs resemble the top or the middle graph in figure \ref{fig:example_graphs}, with relatively few resembling the bottom graph.
+
+
+\begin{figure}
+\label{fig:cc_popular}
 \begin{center}
+\caption{$C^\Delta$ of Popular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-popular.png}
 \end{center}
+\end{figure}
 
+\begin{figure}
 \begin{center}
+\caption{$C^\Delta$ of Unpopular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-unpopular.png}
 \end{center}
+\end{figure}
 
+\begin{figure}
+\label{fig:q_distribution}
 \begin{center}
+\caption{$Q$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-q-histo.png}
 \end{center}
+\end{figure}
 
+\begin{figure}
 \begin{center}
+\caption{$S^\Delta$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-smallworld-histo.png}
 \end{center}
+\end{figure}
 
+\begin{figure}
 \begin{center}
+\caption{$C^\Delta$ and Project Popularity}
 \includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
 \end{center}
+\end{figure}
+
+The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
 
 \subsection{Qualitative}
 
 \section{Conclusion}
+
+
 \section{Acknowledgments}
 
 \bibliographystyle{plain}

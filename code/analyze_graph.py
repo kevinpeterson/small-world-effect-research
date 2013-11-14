@@ -4,7 +4,6 @@ import itertools
 import matplotlib.pyplot as plt
 import random
 import numpy as np
-import math
 import table
 
 def read_contributors():
@@ -45,29 +44,6 @@ def read_stats():
 
     return popularity
 
-def read_github():
-    contributors = {}
-    projects = {}
-    popularity = {}
-    csvreader = csv.DictReader(open('../data/combined.csv'), delimiter=',')
-    for row in csvreader:
-        if row['repository_fork'] == 'true':
-            continue
-
-        forks = int(row['repository_forks'])
-        watchers = int(row['repository_watchers'])
-        project = row['repository_url']
-        popularity[project] = int(math.sqrt(forks * watchers))
-        contributor = row['actor_attributes_login']
-        if contributor not in contributors:
-            contributors[contributor] = []
-        if project not in projects:
-            projects[project] = []
-
-        contributors[contributor].append(project)
-        projects[project].append(contributor)
-
-    return contributors, projects, popularity
 
 def reject_outliers(data):
     return data
@@ -192,8 +168,10 @@ def graph(name, contributors, popularity):
     create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None])
     highest_performing(name, bins, values)
 
+    total_projects = len(set(sum(contributors.values(), [])))
+
     write_table("subgraphs_summary",
-                table.create_table("Summary", "Summary", N,
+                table.create_table("Summary", "fig:summary_stats", "Projects: %s, Subgraphs: %s, Contributors: %s" % (total_projects, N, len(contributors.keys())),
                                    {
                                        "Q": q,
                                        "$C^\Delta$": cc,

@@ -11,7 +11,7 @@ summary_functions = OrderedDict(
      ("Std", lambda x : round(np.std(x),sigdigits))]
 )
 
-def create_table(title,label,N,stats,functions=summary_functions):
+def create_table(title,label,caption,stats,functions=summary_functions):
     table = ""
     table += "\\begin{table}[htbp]\centering\n"
     table += "\caption{\label{"+label+"}\n"
@@ -21,7 +21,7 @@ def create_table(title,label,N,stats,functions=summary_functions):
     table += "".join([s + " & " + " & ".join([str(f(stats[s])) for k,f in functions.items()]) + " \\\ \n" for s in stats])
     table += "\hline\n"
     table += "\multicolumn{"+str(len(functions)+1)+"}{@{}l}{\n"
-    table += "N = "+str(N)+"}\n"
+    table += caption+"}\n"
     table += "\end{tabular}\n"
     table += "\end{table}\n"
 
