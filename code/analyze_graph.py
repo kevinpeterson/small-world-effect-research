@@ -68,8 +68,9 @@ def get_small_worldness(q_dict_g, q_dict_rand):
 def compute_q(graph):
     cc = nx.transitivity(graph)
     pl = nx.average_shortest_path_length(graph)
+    avg_cc = nx.average_clustering(graph, weight="weight")
 
-    return {"q":cc/pl,"pl":pl,"cc":cc}
+    return {"q":cc/pl,"pl":pl,"cc":cc, "avg_cc": avg_cc}
 
 def compute_random_graph(nodes, edges):
 
@@ -108,11 +109,14 @@ def graph(name, contributors, popularity):
             e0 = combination[0]
             e1 = combination[1]
             if not G.has_edge(e0,e1) and not G.has_edge(e1,e0):
-                G.add_edge(e0,e1)
+                G.add_edge(e0,e1, weight=1)
+            else:
+                G[e0][e1]['weight'] += 1
 
     q = []
     cc = []
     pl = []
+    avg_cc = []
     popularity_score = []
     small_worldness = []
     subgraph_node_number = []
@@ -143,6 +147,7 @@ def graph(name, contributors, popularity):
         q.append(graph_q['q'])
         cc.append(graph_q['cc'])
         pl.append(graph_q['pl'])
+        avg_cc.append(graph_q['avg_cc'])
 
         try:
             avg_popularity = np.mean([float(popularity[node]) for node in subgraph])
@@ -175,6 +180,7 @@ def graph(name, contributors, popularity):
                                    {
                                        "Q": q,
                                        "$C^\Delta$": cc,
+                                       "$\overline{C^\Delta}$": avg_cc,
                                        "L": pl,
                                        "Popularity": popularity_score,
                                        "$S^\Delta$": [x for x in small_worldness if x is not None],

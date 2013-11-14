@@ -44,13 +44,14 @@ A `small world' network is a social network characterized by high clustering of 
 Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. The data collection used was collected from the popular open source project site FreeCode\footnote{http://freecode.com/}, and contains data up to September, 2013.
 
 \subsection{Analysis}
-Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
+The collected data was organized into a graph structure, with the nodes representing the projects and the edges representing one or more shared developer between projects.
+
 
 \textit{Graph Structure}
-A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by $G=(P,C,E)$, where $P \cap C = \emptyset$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa.
+A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.
 
 \begin{figure}
-\label{fig:example_graphs}
+\label{fig:example_bipartite_graph}
 \centering
 \begin{tikzpicture}
 \tikzset{P/.style={circle,fill=lightgray!20}}
@@ -69,27 +70,51 @@ A bipartite graph is a specialized type of graph containing two disjoint sets of
   
   \draw ({p1}) -- ({c1});
   \draw ({p1}) -- ({c2});
-  \draw ({p2}) -- ({c2});
-  \draw ({p2}) -- ({c4});
+  \draw ({p2}) -- ({c2});;
+  \draw ({p3}) -- ({c2});
   \draw ({p3}) -- ({c3});
   \draw ({p4}) -- ({c3});
+  \draw ({p4}) -- ({c4});
   \node[draw=none,fill=none,rectangle,left=1mm of p1] {Projects}; 
   \node[draw=none,fill=none,rectangle,right=1mm of c1] {Contributors}; 
 \end{tikzpicture}
-\caption{A caption.}
+\caption{An example bipartite graph of Projects and Contributors}
 \end{figure}
 
-This is a typical representation found in social and collaboration networks\cite{ramasco2004self}.
+A bipartite graph projection. in necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the project nodes, or $P$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, projects are connected directly, with edges occurring if one or more developer is shared between the projects. It is important to note that the projection could have been done in terms of the contributors, not the projects. This would have led to a graph with nodes of contributors $C$, each being linked by sharing a common project. This approach is another common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data reprented in the original graph\cite{zhou2007bipartite}.\\
+
+One of the main sources of information loss is multiple connections between projects, or projects that share multiple collaborators. When doing a bipartite projection based on projects $P$, a single link could represent one shared developer or many. This is an evident source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite}.
+
+\begin{figure}
+\label{fig:example_bipartite_projection_graph}
+\centering
+\begin{tikzpicture}
+\tikzset{P/.style={circle,fill=lightgray!20}}
+\tikzset{C/.style={circle,fill=black!20}}
+
+ [scale=.5,auto=left]
+  \node[P] (p1) at (-5,3)  {$P_1$};
+  \node[P] (p2) at (-3,2)  {$P_2$};
+  \node[P] (p3) at (-5,1)  {$P_3$};
+  \node[P] (p4) at (-2,1)  {$P_4$};
+
+  \draw ({p1}) -- ({p3});
+  \draw ({p1}) -- ({p2});
+  \draw ({p1}) -- ({p2});
+  \draw ({p2}) -- ({p3});
+  \draw ({p3}) -- ({p4});
+\end{tikzpicture}
+\caption{A $P$ projection of the figure \ref{fig:example_bipartite_graph} bipartite graph}
+\end{figure}
 
 
-The collected data was organized into a graph structure $G$, with the nodes representing the projects and the edges representing one or more shared developer between projects.
-
-
-We calcluate the \textit{Clustering Coefficient} (or $C^\delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
+We calcluate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
 \[C^\delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
 Also, measuring \textit{Path Length} ($L$) allows us to determine how far removed developers in the graph are from one another. For example 
+
+Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
 
 \begin{figure}
 \label{fig:example_graphs}
