@@ -111,12 +111,12 @@ One of the main sources of information loss is multiple connections between proj
 \subsubsection{Graph Analysis}
 To support our hypotheses, there are several key metrics to be studied in regards to the aforementioned graph. Many of these metrics follow the work of Boccaletti \textit{et. al}\cite{boccaletti2006complex}, and other studies of similar graph types CITATION HERE.
 
-\textit{Clustering Coefficient (Transitivity}\\
+\textit{Clustering Coefficient (Transitivity)}\\
 We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
 \[C^\delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
-\textit{Clustering Coefficient (Average}\\
+\textit{Clustering Coefficient (Average)}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
 
 \[ c_i = \frac{|\{e_{jk}\}|}{k_i(k_i-1)} :\, v_j,v_k \in N_i,\, e_{jk} \in E \]
@@ -203,10 +203,11 @@ It has been well recognized through history that people tend to make connections
 
 Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. First, $S^\Delta > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
 
-$Q$ and $C^\Delta$ both indicate a non-normal distribution, as shown by the large standard deviation. This observation indicates a propensity towards the extremes of these measurements. This is further reinforced by the distribution of $Q$ shown in figure \ref{fig:q_distribution}. This figure indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of either 0 or 1.\\
+$Q$ and $C^\Delta$ both indicate a non-normal distribution, as shown by the large standard deviation. This observation indicates a propensity towards the extremes of these measurements. This is further reinforced by the distribution of $Q$ shown in figure \ref{fig:q_distribution}. This figure indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1.\\
 
 Exploring this phenomenon further, follows that most graphs resemble the top or the middle graph in figure \ref{fig:example_graphs}, with relatively few resembling the bottom graph.
 
+To validate the hypothesis, we expect to find that medium values of $C^\Delta$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $C^\Delta$ values as shown in figure \ref{fig:cc_popular}. The $C^\Delta$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}. It is important to note, however that, the standard deviation is high, as shown in both \ref{fig:summary_stats} and the significant difference between the mean and median results.
 
 \begin{figure}
 \label{fig:cc_popular}
