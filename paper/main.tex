@@ -52,7 +52,6 @@ The collected data was organized into a graph structure, with the nodes represen
 A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.
 
 \begin{figure}
-\label{fig:example_bipartite_graph}
 \centering
 \begin{tikzpicture}
 \tikzset{P/.style={circle,fill=lightgray!20}}
@@ -80,6 +79,7 @@ A bipartite graph is a specialized type of graph containing two disjoint sets of
   \node[draw=none,fill=none,rectangle,right=1mm of c1] {Contributors}; 
 \end{tikzpicture}
 \caption{An example bipartite graph of Projects and Contributors}
+\label{fig:example_bipartite_graph}
 \end{figure}
 
 A bipartite graph projection. in necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the project nodes, or $P$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, projects are connected directly, with edges occurring if one or more developer is shared between the projects. It is important to note that the projection could have been done in terms of the contributors, not the projects. This would have led to a graph with nodes of contributors $C$, each being linked by sharing a common project. This approach is another common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data reprented in the original graph\cite{zhou2007bipartite}.\\
@@ -87,7 +87,6 @@ A bipartite graph projection. in necessary to further analyze the graph. A bipar
 One of the main sources of information loss is multiple connections between projects, or projects that share multiple collaborators. When doing a bipartite projection based on projects $P$, a single link could represent one shared developer or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}.
 
 \begin{figure}
-\label{fig:example_bipartite_projection_graph}
 \centering
 \begin{tikzpicture}
 \tikzset{P/.style={circle,fill=lightgray!20}}
@@ -106,6 +105,7 @@ One of the main sources of information loss is multiple connections between proj
   \draw ({p3}) -- ({p4});
 \end{tikzpicture}
 \caption{A $P$ projection of the figure \ref{fig:example_bipartite_graph} bipartite graph}
+\label{fig:example_bipartite_projection_graph}
 \end{figure}
 
 \subsubsection{Graph Analysis}
@@ -133,7 +133,6 @@ Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortes
 Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
 
 \begin{figure}
-\label{fig:example_graphs}
 \centering
 \begin{tikzpicture}
   [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
@@ -179,17 +178,28 @@ Results were analyzed using the Python graph processing packaged NetworkX\cite{h
   \draw ({n2}) -- ({n4});
 \end{tikzpicture}
 \caption{A caption.}
+\label{fig:example_graphs}
 \end{figure}
 
 
 
 \textit{Small-World-ness}\\
+The idea of a \textit{small world} can be formalized by the following equations\cite{humphries2008network}.
 
+First, let $\gamma^{\Delta}_g$ equal the ratio of the clustering coefficient of a given graph and a random graph.
 \[\gamma^{\Delta}_g = \frac{C^{\Delta}_g }{C^{\Delta}_{rand} } \]
 
+Next apply a similar pattern to the average path length $\lambda_g$.
 \[\lambda_g = \frac{L_g }{L_{rand} } \]
 
+Finally, the ratio of the above calculations yields the small-world-ness, or $S^\Delta$, of the graph
 \[S^\Delta = \frac{\gamma^{\Delta}_g }{\lambda_g} \]
+
+We assume for throughout that any graph exhibiting $S^\Delta > 1$ is a small-world graph.
+
+\textit{Successful vs Unsuccessful}\\
+To further explore the data, a comparion was made between \textit{successful} and \textit{unsuccessful} projects was made. We define \textit{successful} as any project with {$PopularityScore > 100$}, and \textit{unsuccessful} as any project with {$PopularityScore < 50$}. Given this view of the data, we can then make assertions about how we expect these types of projects to behave, given the stated hypothesis. More specifically, we can examine not only if the u-shaped curve holds for \textit{popular} projects, but if the inverse holds for \textit{unsuccessful} ones.
+
 
 
 \subsubsection{Qualitative Analysis}
@@ -207,29 +217,47 @@ $Q$ and $C^\Delta$ both indicate a non-normal distribution, as shown by the larg
 
 Exploring this phenomenon further, follows that most graphs resemble the top or the middle graph in figure \ref{fig:example_graphs}, with relatively few resembling the bottom graph.
 
-To validate the hypothesis, we expect to find that medium values of $C^\Delta$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $C^\Delta$ values as shown in figure \ref{fig:cc_popular}. The $C^\Delta$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}. It is important to note, however that, the standard deviation is high, as shown in both \ref{fig:summary_stats} and the significant difference between the mean and median results.
+To validate the hypothesis, we expect to find that medium values of $C^\Delta$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $C^\Delta$ values as shown in figure \ref{fig:cc_graph}. The $C^\Delta$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}. It is important to note, however that, the standard deviation is high, as shown in both \ref{fig:summary_stats} and the significant difference between the mean and median results.
 
 \begin{figure}
-\label{fig:cc_popular}
+\begin{center}
+\caption{$C^\Delta$ and Project Popularity}
+\includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
+\end{center}
+\caption{A caption.}
+\label{fig:cc_graph}
+\end{figure}
+
+Popular projects do appear to conform to the results found by Uzzi\cite{uzzi2005collaboration}. As show in figure \ref{fig:cc_unpopular}, $C^\Delta$ near the extremes (0.0 or 1.0) show a relatively low likelihood of being popular. As $C^\Delta$ values approach mid-range values, the probability of a project being a success increases greatly.
+
+
+\begin{figure}
 \begin{center}
 \caption{$C^\Delta$ of Popular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-popular.png}
 \end{center}
+\caption{A caption.}
+\label{fig:cc_popular}
 \end{figure}
+
+The inverse is true of unpopular projects. As $C^\Delta$ near the extremes (0.0 or 1.0), a high probability of being unsuccessful is observed. Mid-valued $C^\Delta$ values indicate a substantially lower probability of being unsuccessful.
 
 \begin{figure}
 \begin{center}
 \caption{$C^\Delta$ of Unpopular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-unpopular.png}
 \end{center}
+\caption{A caption.}
+\label{fig:cc_unpopular}
 \end{figure}
 
 \begin{figure}
-\label{fig:q_distribution}
 \begin{center}
 \caption{$Q$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-q-histo.png}
 \end{center}
+\caption{A caption.}
+\label{fig:q_distribution}
 \end{figure}
 
 \begin{figure}
@@ -237,20 +265,19 @@ To validate the hypothesis, we expect to find that medium values of $C^\Delta$ w
 \caption{$S^\Delta$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-smallworld-histo.png}
 \end{center}
+\caption{A caption.}
+\label{fig:sw_distribution}
 \end{figure}
 
-\begin{figure}
-\begin{center}
-\caption{$C^\Delta$ and Project Popularity}
-\includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
-\end{center}
-\end{figure}
+
 
 The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
 
 \subsection{Qualitative}
 
 \section{Conclusion}
+
+A futher area of study would be how this relates to previously defined \textit{success factors} in projects\cite{cooke2002real}.
 
 
 \section{Acknowledgments}
