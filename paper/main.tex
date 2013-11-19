@@ -14,7 +14,7 @@
 \setcounter{secnumdepth}{2}
 
 \title{
-The Small World Network Effect in Open Source Project Teams
+The Small World Network Effect in Software Project Teams
 \author{Kevin Peterson\\
 \small \texttt{pete1968@umn.edu}
 }
@@ -27,29 +27,31 @@ The Small World Network Effect in Open Source Project Teams
 Team cohesion and the dynamics of team forming are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. If follows that visualizing software team members as a graph can give some insight as to what the optimal team conditions are. As team members move between projects, these graphs gets more and more connected as team members make connections. We show that this connectivity, known as the "small world effect," has a positive impact on team performance at when the connectivity levels are moderate. This aligns with similar research findings of non-software teams. We do, however, find high performance at the extremes of the connectivity range.
 \end{abstract}
 
-\noindent \\\textbf{Keywords.} Git, GitHub, Open Source
+\noindent \\\textbf{Keywords.} Small World, Project Management, Software
 
 \section{Introduction}
 A social network is a graph people and the interactions between them. The dynamics of social networks have proved to be an important research topic for many different areas of study, from academic publication\cite{barabasi2002evolution}, to the success of broadway musicals\cite{uzzi2005collaboration}. In general, a social network is important to understanding how ideas and influence are spread\cite{kempe2003maximizing}, from which we can investigate the best conditions for optimal group perfomance within these networks.
 
-A `small world' network is a social network characterized by high clustering of graph nodes paired with a short average path between nodes \cite{watts1998collective}. Milgram, in is seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}. From these observations, hypotheses can be made as to the efficiency of how knowledge is transfered in these groups\cite{latora2001efficient}. In this work, we investigate the `small world' phenomenon and how it relates to Open Source Project Teams.
+A `small world' network is a social network characterized by high clustering of graph nodes paired with a short average path between nodes \cite{watts1998collective}. `Clustering' in this context means how closely nodes in the graph are related to each other, or "the friend of my friend is also my friend." Milgram, in is seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}. From these observations, hypotheses can be made as to the efficiency of how knowledge is transfered in these groups\cite{latora2001efficient}. In this work, we investigate the `small world' phenomenon and how it relates to Software Project Teams.
 
 
 \subsection{Hypothesis}
+The formalization of the `small world' quality of a graph can be expressed by the \textit{Small World Quotient}, or $Q$\cite{watts1999small,watts1998collective}. The value $Q$ is calculated by dividing the clustering factor of graph by the average path length between nodes. Uzzi explored this value in graphs of Broadway productions\cite{uzzi2005collaboration}. His findings suggest that the success of Broadway productions is greatest when teams have a good mix of new and familiar members. Productions are less likely to be successful when team members are very familiar with each other. Also, probability of success drops much the same way when there is little familiarity between team members. This indicates that there is an optimal ratio of new and familiar members on a team -- or, an optimal value of $Q$ when related to performance.
 
-\textit{Open Source Project Teams will perform best at moderate levels of $Q$. This performance, measured by the number of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}. }
+\textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the number of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
 
 \section{Methods}
 
 \subsection{Collection and Storage}
-Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. The data collection used was collected from the popular open source project site FreeCode\footnote{http://freecode.com/}, and contains data up to September, 2013.
+Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. The data collection used was collected from the popular open source project site FreeCode\footnote{http://freecode.com/}, and contains data up to September, 2013. Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}. All source code pertaining to the collection and analysis can be found at \url{https://github.com/kevinpeterson/small-world-effect-research}.
 
 \subsection{Analysis}
-The collected data was organized into a graph structure, with the nodes representing the projects and the edges representing one or more shared developer between projects.
-
+The collected data was organized into a graph structure, with the nodes representing the projects and the edges representing one or more shared developer between projects. Various properties of the graph are analyzied, as indicated in the sections below.
 
 \subsubsection{Graph Structure}
-A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.
+We first consider the FreeCode FLOSSmole\cite{floss2006} data sets to be one large graph. From this large disconnected graph, each connected subgraph is analyzed. Metrics are computed for each of these subgraphs, and a total subgraph performance is computed by averaging the performance value of each graph in the subgraph. We measure a subgraph's perfomance by the FreeCode \textit{Popularity Score} metric, which is calculated the following formula\footnote{http://help.freecode.com/kb/statistics/how-do-you-measure-a-projects-popularity}:
+
+\[ ((record\ hits + URL\ hits) \cdot (followers + 1))^{1/2} \]
 
 \begin{figure}
 \centering
@@ -82,6 +84,8 @@ A bipartite graph is a specialized type of graph containing two disjoint sets of
 \label{fig:example_bipartite_graph}
 \end{figure}
 
+A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
+
 A bipartite graph projection. in necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the project nodes, or $P$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, projects are connected directly, with edges occurring if one or more developer is shared between the projects. It is important to note that the projection could have been done in terms of the contributors, not the projects. This would have led to a graph with nodes of contributors $C$, each being linked by sharing a common project. This approach is another common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data reprented in the original graph\cite{zhou2007bipartite}.\\
 
 One of the main sources of information loss is multiple connections between projects, or projects that share multiple collaborators. When doing a bipartite projection based on projects $P$, a single link could represent one shared developer or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}.
@@ -109,28 +113,34 @@ One of the main sources of information loss is multiple connections between proj
 \end{figure}
 
 \subsubsection{Graph Analysis}
-To support our hypotheses, there are several key metrics to be studied in regards to the aforementioned graph. Many of these metrics follow the work of Boccaletti \textit{et. al}\cite{boccaletti2006complex}, and other studies of similar graph types CITATION HERE.
+To support our hypotheses, there are several key metrics to be studied in regards to the aforementioned graph. Many of these metrics follow the work of Boccaletti \textit{et. al}\cite{boccaletti2006complex}, and other studies of similar graph types\cite{latora2001efficient,adamic1999small}.
 
-\textit{Clustering Coefficient (Transitivity)}\\
+\noindent\\\textit{Clustering Coefficient - Transitivity ($C^\Delta$)}\\
 We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
-\[C^\delta = 3 \times \frac{\text{number of triangles}}
+\[C^\Delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
-\textit{Clustering Coefficient (Average)}\\
+\noindent\\\textit{Clustering Coefficient - Average ($\overline{C^\Delta}$)}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
 
-\[ c_i = \frac{|\{e_{jk}\}|}{k_i(k_i-1)} :\, v_j,v_k \in N_i,\, e_{jk} \in E \]
+\[ C_i = \frac{|\{e_{jk}\}|}{k_i(k_i-1)} :\, v_j,v_k \in N_i,\, e_{jk} \in E \]
 
 {$N_i = \{v_j : e_{ij} \in E\}$}
 
-\textit{Average Path Length}\\
+\[ \overline{C^\Delta} = \frac{1}{|P|}\sum^{|P|}_{i=1}C_i \]
+Unless otherwise noted, the Transitivity version of this metric ($C^\Delta$) will be used for all further calculations and metrics.
+
+\noindent\\\textit{Average Path Length ($L$)}\\
 Also, calculating the \textit{Path Length} ($L$) allows us to determine how far removed developers in the graph are from one another. The path length is calculated as the average distance between any two node pairs in the graph:
 
 \[L = \frac{1}{|P| \cdot (|P|-1)} \sum_{i \neq j}\lambda(v_i,v_j)\]
 
 Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only consider path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
 
-Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}.
+\noindent\\\textit{Small World Quotient ($Q$)}\\
+The \textit{Small World Quotient} ($Q$) is defined as the Clustering Coefficient ($C^\Delta$) divided by the  Average Path Length ($L$)\cite{watts1999small,watts1998collective}.
+
+\[Q =  \frac{C^\Delta}{L}\]
 
 \begin{figure}
 \centering
@@ -177,14 +187,13 @@ Results were analyzed using the Python graph processing packaged NetworkX\cite{h
   \draw ({n1}) -- ({n4});
   \draw ({n2}) -- ({n4});
 \end{tikzpicture}
-\caption{A caption.}
+\caption{Example Clustering Coefficient ($C^\Delta$) values for sample graphs}
 \label{fig:example_graphs}
 \end{figure}
 
 
-
-\textit{Small-World-ness}\\
-The idea of a \textit{small world} can be formalized by the following equations\cite{humphries2008network}.
+\noindent\\\textit{Small-World-ness ($S^\Delta$)}\\
+The definition of a \textit{small world} graph can be formalized by the following equations\cite{humphries2008network}.
 
 First, let $\gamma^{\Delta}_g$ equal the ratio of the clustering coefficient of a given graph and a random graph.
 \[\gamma^{\Delta}_g = \frac{C^{\Delta}_g }{C^{\Delta}_{rand} } \]
@@ -197,14 +206,23 @@ Finally, the ratio of the above calculations yields the small-world-ness, or $S^
 
 We assume for throughout that any graph exhibiting $S^\Delta > 1$ is a small-world graph.
 
-\textit{Successful vs Unsuccessful}\\
+\noindent\\\textit{Successful vs Unsuccessful}\\
 To further explore the data, a comparion was made between \textit{successful} and \textit{unsuccessful} projects was made. We define \textit{successful} as any project with {$PopularityScore > 100$}, and \textit{unsuccessful} as any project with {$PopularityScore < 50$}. Given this view of the data, we can then make assertions about how we expect these types of projects to behave, given the stated hypothesis. More specifically, we can examine not only if the u-shaped curve holds for \textit{popular} projects, but if the inverse holds for \textit{unsuccessful} ones.
 
 
-
 \subsubsection{Qualitative Analysis}
-It has been asserted that people tend to make connections with people with whom they share similarities\cite{mcpherson2001birds}. This idea of homophily, however, needs to be further expanded before we can make assertions about correlations to performance. It has been shown that demographic homophily is complex to measure, correlates little to performance outcomes, and in fact correlate negatively\cite{reagans2004make,lawrence1997perspective}. For our purposes, it is much more appropriate to examine how teams best leverage similarities of knowledge and information, as the flow of these assets can be a key driver to success\cite{nissen2002extended}.
+It has been asserted that people tend to make connections with people with whom they share similarities\cite{mcpherson2001birds}. This idea of homophily, however, needs to be further expanded before we can make assertions about correlations to performance. It has been shown that demographic homophily is complex to measure, correlates little to performance outcomes, and in fact correlate negatively\cite{reagans2004make,lawrence1997perspective}. For our purposes, it is much more appropriate to examine how teams best leverage similarities of knowledge and information, as the flow of these assets can be a key driver to success\cite{nissen2002extended}.\\
+In the same way we can explore the role of team familiarity. The two types of familiarity that we will explore are \textit{member} familiarity and \textit{task/project} familiarity\cite{harrison2003time}. These metrics, although not captured in data, could be important factors in \textit{how} teams form, and thus help us to understand \textit{why} teams perform the way that they do.\\
+
+To further study these factors, we arranged interviews with two current professionals in the field. Both have had experience with project management and are certified Project Management Professionals (PMP)\textregistered. We proposed to them the following questions:
+
+\noindent\\\textit{Q1: How do development teams collaborate and share ideas?}\\
+\noindent\\\textit{Q2: Do teams generally remain intact over multiple projects, or do members often shuffle and re-combine?}\\
+\noindent\\\textit{Q3: When assembling a team, which is preferred -- members familiar with each other, or members familiar with the task or project.}\\
+\noindent\\\textit{Q4: What are some characteristics of a high performing team?}\\
+\noindent\\\textit{Q5: In your experience, is it better to (A) keep an innovative team intact, (B) periodically bring in new members or re-assign exising members, or (C) split up and disperse the team to as many other projects as possible?}\\
  
+
 \section{Results}
 
 \subsection{Quantitative}
@@ -221,10 +239,9 @@ To validate the hypothesis, we expect to find that medium values of $C^\Delta$ w
 
 \begin{figure}
 \begin{center}
-\caption{$C^\Delta$ and Project Popularity}
 \includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
 \end{center}
-\caption{A caption.}
+\caption{$C^\Delta$ and Project Popularity}
 \label{fig:cc_graph}
 \end{figure}
 
@@ -233,10 +250,9 @@ Popular projects do appear to conform to the results found by Uzzi\cite{uzzi2005
 
 \begin{figure}
 \begin{center}
-\caption{$C^\Delta$ of Popular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-popular.png}
 \end{center}
-\caption{A caption.}
+\caption{$C^\Delta$ of Popular Projects}
 \label{fig:cc_popular}
 \end{figure}
 
@@ -244,38 +260,37 @@ The inverse is true of unpopular projects. As $C^\Delta$ near the extremes (0.0 
 
 \begin{figure}
 \begin{center}
-\caption{$C^\Delta$ of Unpopular Projects}
 \includegraphics[width=0.5\textwidth]{images/freecode-unpopular.png}
 \end{center}
-\caption{A caption.}
+\caption{$C^\Delta$ of Unpopular Projects}
 \label{fig:cc_unpopular}
 \end{figure}
 
+Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. This indicates that the majority of sub-graphs have a $Q$ value near either 0.0 or 1.0. 
+
+
 \begin{figure}
 \begin{center}
-\caption{$Q$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-q-histo.png}
 \end{center}
-\caption{A caption.}
+\caption{$Q$ Distribution}
 \label{fig:q_distribution}
 \end{figure}
 
+Small-world-ness, or $S^\Delta$, is generally between 1 and 3 for most sub-graphs.
+
 \begin{figure}
 \begin{center}
-\caption{$S^\Delta$ Distribution}
 \includegraphics[width=0.5\textwidth]{images/freecode-smallworld-histo.png}
 \end{center}
-\caption{A caption.}
+\caption{$S^\Delta$ Distribution}
 \label{fig:sw_distribution}
 \end{figure}
-
-
-
-The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
 
 \subsection{Qualitative}
 
 \section{Conclusion}
+The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
 
 A futher area of study would be how this relates to previously defined \textit{success factors} in projects\cite{cooke2002real}.
 
