@@ -123,12 +123,16 @@ We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of
 \noindent\\\textit{Clustering Coefficient - Average ($\overline{C^\Delta}$)}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
 
-\[ C_i = \frac{|\{e_{jk}\}|}{k_i(k_i-1)} :\, v_j,v_k \in N_i,\, e_{jk} \in E \]
+Given our graph of nodes $P$ connected by edges $E$, or ${G=(P,E)}$, for any given node we can determine its \textit{neighborhood} ($N_i$), or the set of nodes directly connected to a given node.
+\[ N_i = \{v_j : e_{ij} \in E \wedge e_{ji} \in E \wedge v_j \in P\} \]
 
-{$N_i = \{v_j : e_{ij} \in E\}$}
+Given this \textit{neighborhood}, we can then calculate how closely connected the nodes are. To do this, we take the number of actual connections between neighbors divided by the total possible number of connections, where $k_i$ represents the count of the neighbors of a node, or {$k_i = |N_i|$}
+\[ C_i = \frac{2|\{e_{jk}: v_j,v_k \in N_i, e_{jk} \in E\}|}{k_i(k_i-1)} \]
 
+From this \textit{Local Clustering Coefficient} $\overline{C_i}$, we can then take the average over the entire set of nodes in the graph.
 \[ \overline{C^\Delta} = \frac{1}{|P|}\sum^{|P|}_{i=1}C_i \]
-Unless otherwise noted, the Transitivity version of this metric ($C^\Delta$) will be used for all further calculations and metrics.
+
+It is important to note that although the terminology is similar\cite{uzzi2005collaboration}, $\overline{C^\Delta}$ and $C^\Delta$ are different measurements. Unless otherwise noted, the Transitivity version of this metric ($C^\Delta$) will be used for all further calculations and metrics.
 
 \noindent\\\textit{Average Path Length ($L$)}\\
 Also, calculating the \textit{Path Length} ($L$) allows us to determine how far removed developers in the graph are from one another. The path length is calculated as the average distance between any two node pairs in the graph:
