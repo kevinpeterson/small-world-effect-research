@@ -232,7 +232,8 @@ To further study these factors, we arranged interviews with two current professi
 
 \subsection{Quantitative}
 
-\input{tables/subgraphs_summary}
+\input{tables/subgraphs_summary_freecode}
+\input{tables/subgraphs_summary_sf}
 
 Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. Importantly, $Q > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
 
@@ -245,11 +246,19 @@ To validate the hypothesis, we expect to find that medium values of $Q$ will be 
 \includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
 \end{center}
 \caption{$Q$ and Project Popularity}
-\label{fig:cc_graph}
+\label{fig:q_fc_graph}
 \end{figure}
 
 
-Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around $Q = 1$. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{images/sf-graph.png}
+\end{center}
+\caption{$Q$ and Project Popularity}
+\label{fig:q_sf_graph}
+\end{figure}
+
+Distribution of $Q$ values are shown in figures\ref{fig:fc_q_distribution,fig:sf_q_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around $Q = 1$. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
 
 
 \begin{figure}
@@ -257,7 +266,15 @@ Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. The valu
 \includegraphics[width=0.5\textwidth]{images/freecode-q-histo.png}
 \end{center}
 \caption{$Q$ Distribution}
-\label{fig:q_distribution}
+\label{fig:q_fc_distribution}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{images/sf-q-histo.png}
+\end{center}
+\caption{$Q$ Distribution}
+\label{fig:q_sf_distribution}
 \end{figure}
 
 Small-world-ness, or $Q$, is generally between 1 and 3 for most sub-graphs.

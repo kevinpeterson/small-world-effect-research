@@ -6,7 +6,7 @@ import numpy as np
 import table
 from collections import OrderedDict
 
-def read_contributors():
+def read_contributors_fc():
     contributors = {}
     projects = {}
 
@@ -27,7 +27,7 @@ def read_contributors():
     return contributors,projects
 
 
-def read_stats():
+def read_stats_fc():
     popularity = {}
 
     fp = file('../data/fcProjectStats2013-Sep.txt')
@@ -48,6 +48,48 @@ def read_stats():
 
     return popularity
 
+
+def read_contributors_sf():
+    contributors = {}
+    projects = {}
+
+    fp = file('../data/sfRawDeveloperProjectData2009-Jun.txt')
+    csvreader = csv.DictReader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
+    for row in csvreader:
+        contributor = row['dev_loginname'].strip()
+        project = row['proj_unixname'].strip()
+        if contributor not in contributors:
+            contributors[contributor] = []
+        if project not in projects:
+            projects[project] = []
+
+        contributors[contributor].append(project)
+        projects[project].append(contributor)
+    fp.close()
+
+    return contributors,projects
+
+
+def read_stats_sf():
+    popularity = {}
+
+    fp = file('../data/sfRawRanksData2009-Jun.txt')
+    csvreader = csv.DictReader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
+    for row in csvreader:
+        project_id = row['proj_unixname'].strip()
+        popularity_score = row['round(avg(rank))'].strip()
+
+        try:
+            score = float(popularity_score)
+        except ValueError, e:
+            print "ERROR calculating project score: %s" % str(popularity_score)
+            score = 0
+
+        if project_id not in popularity: popularity[project_id] = score
+
+    fp.close()
+
+    return popularity
 
 def reject_outliers(data):
     return data
@@ -119,6 +161,8 @@ def graph(name, data, popularity):
         nodes = subgraph.number_of_nodes()
         edges = subgraph.number_of_edges()
 
+        if nodes > 10000: continue
+
         if nodes < 3: continue
 
         subgraph_node_number.append(nodes)
@@ -165,16 +209,15 @@ def graph(name, data, popularity):
 
     total_projects = len(set(sum(contributors.values(), [])))
 
-    write_table("subgraphs_summary",
-                table.create_table("Summary", "fig:summary_stats", "Projects: %s, Subgraphs: %s, Contributors: %s" % (total_projects, N, len(contributors.keys())),
+    write_table("subgraphs_summary_" + name,
+                table.create_table("Summary", "fig:summary_stats", "P: %s, $P_c$: %s, C: %s" % (total_projects, N, len(contributors.keys())),
                                    OrderedDict([
                                        ("$Q$", q),
                                        ("$C$", cc),
                                        ("$\overline{C}$", avg_cc),
                                        ("$L$", pl),
-                                       ("Popularity",popularity_score),
-                                       ("Nodes", subgraph_node_number),
-                                       ("Edges", subgraph_edge_number)
+                                       ("N", subgraph_node_number),
+                                       ("E", subgraph_edge_number)
                                    ])))
 
 def write_table(file_name, table_tex):
@@ -206,4 +249,5 @@ def create_graph(filename, x, y):
     F.savefig("../paper/images/"+filename+"-graph.png")
     plt.close(fig)
 
-graph("freecode", read_contributors(), read_stats())
+graph("freecode", read_contributors_fc(), read_stats_fc())
+graph("sf", read_contributors_sf(), read_stats_sf())
