@@ -2,12 +2,12 @@ import networkx as nx
 import csv
 import itertools
 import matplotlib.pyplot as plt
-import random
 import numpy as np
 import table
 
 def read_contributors():
     contributors = {}
+    projects = {}
 
     fp = file('../data/fcProjectAuthors2013-Sep.txt')
     csvreader = csv.DictReader(filter(lambda row: row[0]!='#', fp), delimiter='\t')
@@ -16,11 +16,14 @@ def read_contributors():
         project = row['project_id'].strip()
         if contributor not in contributors:
             contributors[contributor] = []
+        if project not in projects:
+            projects[project] = []
 
         contributors[contributor].append(project)
+        projects[project].append(contributor)
     fp.close()
 
-    return contributors
+    return contributors,projects
 
 
 def read_stats():
@@ -48,7 +51,7 @@ def read_stats():
 def reject_outliers(data):
     return data
 
-def get_small_worldness(q_dict_g, q_dict_rand):
+def get_q(q_dict_g, q_dict_rand):
     """
     Humphries, M. D., & Gurney, K. (2008).
     Network 'small-world-ness': a quantitative method for determining canonical network equivalence. PLoS One, 3(4), e0002051.
@@ -62,50 +65,35 @@ def get_small_worldness(q_dict_g, q_dict_rand):
 
         return (C_g/C_rand) / (L_g/L_rand)
     except ZeroDivisionError:
-       return None
+        return None
 
 
-def compute_q(graph):
+def compute_stats(graph):
     cc = nx.transitivity(graph)
     pl = nx.average_shortest_path_length(graph)
     avg_cc = nx.average_clustering(graph, weight="weight")
 
-    return {"q":cc/pl,"pl":pl,"cc":cc, "avg_cc": avg_cc}
+    return {"pl":pl,"cc":cc, "avg_cc": avg_cc}
 
-def compute_random_graph(nodes, edges):
+def compute_random_graph(nodes, edges, g):
 
-    graph_r = nx.Graph()
+    degrees = sum(g.degree().values())
+    avg_degree = (float(degrees)/float(nodes))
+    try:
+        return nx.connected_watts_strogatz_graph(nodes, int(avg_degree), 0.5)
+    except nx.NetworkXPointlessConcept:
+        assert (edges == (nodes - 1))
+        return g
 
-    node_range = range(0,nodes)
-
-    random_edges = 0
-
-    last_node = None
-    for i in node_range:
-        if last_node is None:
-            last_node = i
-        else:
-            graph_r.add_edge(last_node,i)
-            last_node = i
-
-    while random_edges < edges:
-        node1 = random.choice(node_range)
-        node2 = random.choice(node_range)
-
-        if node1 != node2:
-            graph_r.add_edge(node1,node2)
-            random_edges += 1
-
-    return graph_r
-
-
-def graph(name, contributors, popularity):
+def graph(name, data, popularity):
+    contributors = data[0]
+    projects = data[1]
     G = nx.Graph()
 
-    for contributor in contributors:
-        contributor_projects = contributors[contributor]
+    for project in projects:
+        project_contributors = projects[project]
 
-        for combination in itertools.combinations(contributor_projects, r=2):
+        for combination in itertools.combinations(project_contributors, r=2):
             e0 = combination[0]
             e1 = combination[1]
             if not G.has_edge(e0,e1) and not G.has_edge(e1,e0):
@@ -118,7 +106,6 @@ def graph(name, contributors, popularity):
     pl = []
     avg_cc = []
     popularity_score = []
-    small_worldness = []
     subgraph_node_number = []
     subgraph_edge_number = []
 
@@ -128,39 +115,43 @@ def graph(name, contributors, popularity):
     N = 0
     subgraphs = sample_graphs(nx.connected_component_subgraphs(G))
     for subgraph in subgraphs:
-        N += 1
-
         nodes = subgraph.number_of_nodes()
         edges = subgraph.number_of_edges()
+
+        if nodes < 3: continue
 
         subgraph_node_number.append(nodes)
         subgraph_edge_number.append(edges)
 
-        graph_q = compute_q(subgraph)
+        graph_stats = compute_stats(subgraph)
 
-        random_graph = compute_random_graph(nodes, edges)
+        random_graph = compute_random_graph(nodes, edges, subgraph)
 
-        random_q = compute_q(random_graph)
+        random_stats = compute_stats(random_graph)
 
-        small_worldness.append(get_small_worldness(graph_q, random_q))
+        q_value = get_q(graph_stats, random_stats)
 
-        q.append(graph_q['q'])
-        cc.append(graph_q['cc'])
-        pl.append(graph_q['pl'])
-        avg_cc.append(graph_q['avg_cc'])
+        if q_value is None: continue
+
+        N += 1
+
+        q.append(q_value)
+
+        cc.append(graph_stats['cc'])
+        pl.append(graph_stats['pl'])
+        avg_cc.append(graph_stats['avg_cc'])
+
+        graph_projects = set(sum([contributors[j] for j in subgraph],[]))
 
         try:
-            avg_popularity = np.mean([float(popularity[node]) for node in subgraph])
-        except ValueError, e:
+            avg_popularity = np.mean([float(popularity[node]) for node in graph_projects])
+        except ValueError:
             print "ERROR calculating popularity"
             avg_popularity = 0
 
         popularity_score.append(avg_popularity)
 
-    print popularity_score
-
-    bins = [round(float(i)*.1,1) for i in range(0,11)]
-
+    bins = np.linspace(min(q),max(q), num=8)
     values = [[] for _ in bins]
 
     idxs = np.digitize(q, bins, right=True)
@@ -169,8 +160,7 @@ def graph(name, contributors, popularity):
         values[idx].append(score)
 
     create_graph(name, bins, values)
-    create_histogram(name + "-q", q, log_y_scale=True)
-    create_histogram(name + "-smallworld", [x for x in small_worldness if x is not None])
+    create_histogram(name + "-q", "$Q$", q, log_y_scale=True)
     highest_performing(name, bins, values)
 
     total_projects = len(set(sum(contributors.values(), [])))
@@ -178,12 +168,11 @@ def graph(name, contributors, popularity):
     write_table("subgraphs_summary",
                 table.create_table("Summary", "fig:summary_stats", "Projects: %s, Subgraphs: %s, Contributors: %s" % (total_projects, N, len(contributors.keys())),
                                    {
-                                       "Q": q,
-                                       "$C^\Delta$": cc,
-                                       "$\overline{C^\Delta}$": avg_cc,
-                                       "L": pl,
+                                       "$Q$": q,
+                                       "$C$": cc,
+                                       "$\overline{C}$": avg_cc,
+                                       "$L$": pl,
                                        "Popularity": popularity_score,
-                                       "$S^\Delta$": [x for x in small_worldness if x is not None],
                                        "Nodes": subgraph_node_number,
                                        "Edges": subgraph_edge_number
                                    }))
@@ -192,11 +181,13 @@ def write_table(file_name, table_tex):
     with open("../paper/tables/"+file_name+".tex", 'w') as the_file:
         the_file.write(table_tex)
 
-def create_histogram(filename, data, log_y_scale=False):
+def create_histogram(filename, x_label, data, log_y_scale=False):
     fig = plt.figure()
     if log_y_scale:
         plt.yscale('log', nonposy='clip')
     plt.hist(data, color="0.75")
+    plt.xlabel(x_label)
+    plt.ylabel("projects")
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-histo.png")
     plt.close(fig)
@@ -208,7 +199,7 @@ def highest_performing(filename, bins, values):
     for bin,value in zip(bins,values):
         if len(value) < 5: continue
         popular_repos = len([v for v in value if v > 100])
-        unpopular_repos = len([v for v in value if v < 50 ])
+        unpopular_repos = len([v for v in value if v < 100 ])
         print str(bin) + " " + str(popular_repos) + " " + str(unpopular_repos) + " " + str(len(value))
         for _ in range(int( (float(popular_repos) / len(value)) * 100 )):
             popular_bins.append(bin)
@@ -218,17 +209,22 @@ def highest_performing(filename, bins, values):
     for name, data in zip(["popular","unpopular"], [popular_bins,unpopular_bins]):
         fig = plt.figure()
         plt.hist(data, len(bins), color="0.75")
+        plt.xlabel("$Q$")
+        plt.ylabel("% " + name)
         F = plt.gcf()
         F.savefig("../paper/images/"+filename+"-"+name+".png")
         plt.close(fig)
 
 def create_graph(filename, x, y):
+    for j in y: print len(j)
     avg = [np.mean(j, axis=None) for j in y]
     median = [np.median(j) for j in y]
 
     fig = plt.figure()
-    plt.plot(x,avg,'b-')
-    plt.plot(x,median,'r-')
+    plt.plot(x,avg,'-')
+    plt.plot(x,median,'--')
+    plt.xlabel("$Q$")
+    plt.ylabel("popularity")
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-graph.png")
     plt.close(fig)
