@@ -4,6 +4,7 @@ import itertools
 import matplotlib.pyplot as plt
 import numpy as np
 import table
+from collections import OrderedDict
 
 def read_contributors():
     contributors = {}
@@ -161,21 +162,20 @@ def graph(name, data, popularity):
 
     create_graph(name, q_bins, q_values)
     create_histogram(name + "-q", "$Q$", q, log_y_scale=True)
-    highest_performing(name, q_bins, q_values)
 
     total_projects = len(set(sum(contributors.values(), [])))
 
     write_table("subgraphs_summary",
                 table.create_table("Summary", "fig:summary_stats", "Projects: %s, Subgraphs: %s, Contributors: %s" % (total_projects, N, len(contributors.keys())),
-                                   {
-                                       "$Q$": q,
-                                       "$C$": cc,
-                                       "$\overline{C}$": avg_cc,
-                                       "$L$": pl,
-                                       "Popularity": popularity_score,
-                                       "Nodes": subgraph_node_number,
-                                       "Edges": subgraph_edge_number
-                                   }))
+                                   OrderedDict([
+                                       ("$Q$", q),
+                                       ("$C$", cc),
+                                       ("$\overline{C}$", avg_cc),
+                                       ("$L$", pl),
+                                       ("Popularity",popularity_score),
+                                       ("Nodes", subgraph_node_number),
+                                       ("Edges", subgraph_edge_number)
+                                   ])))
 
 def write_table(file_name, table_tex):
     with open("../paper/tables/"+file_name+".tex", 'w') as the_file:
@@ -191,29 +191,6 @@ def create_histogram(filename, x_label, data, log_y_scale=False):
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-histo.png")
     plt.close(fig)
-
-def highest_performing(filename, bins, values):
-    popular_bins = []
-    unpopular_bins = []
-
-    for bin,value in zip(bins,values):
-        if len(value) < 3: continue
-        popular_repos = len([v for v in value if v > 100])
-        unpopular_repos = len([v for v in value if v < 100 ])
-        print str(bin) + " " + str(popular_repos) + " " + str(unpopular_repos) + " " + str(len(value))
-        for _ in range(int( (float(popular_repos) / len(value)) * 100 )):
-            popular_bins.append(bin)
-        for _ in range(int( (float(unpopular_repos) / len(value)) * 100 )):
-            unpopular_bins.append(bin)
-
-    for name, data in zip(["popular","unpopular"], [popular_bins,unpopular_bins]):
-        fig = plt.figure()
-        plt.hist(data, 4, color="0.75")
-        plt.xlabel("$Q$")
-        plt.ylabel("% " + name)
-        F = plt.gcf()
-        F.savefig("../paper/images/"+filename+"-"+name+".png")
-        plt.close(fig)
 
 def create_graph(filename, x, y):
     for j in y: print len(j)
