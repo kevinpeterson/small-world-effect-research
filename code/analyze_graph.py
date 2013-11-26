@@ -151,17 +151,17 @@ def graph(name, data, popularity):
 
         popularity_score.append(avg_popularity)
 
-    bins = np.linspace(min(q),max(q), num=8)
-    values = [[] for _ in bins]
+    q_bins = np.linspace(min(q),max(q), num=8)
+    q_values = [[] for _ in q_bins]
 
-    idxs = np.digitize(q, bins, right=True)
+    q_idxs = np.digitize(q, q_bins, right=True)
 
-    for idx,score in zip(idxs,popularity_score):
-        values[idx].append(score)
+    for idx,score in zip(q_idxs,popularity_score):
+        q_values[idx].append(score)
 
-    create_graph(name, bins, values)
+    create_graph(name, q_bins, q_values)
     create_histogram(name + "-q", "$Q$", q, log_y_scale=True)
-    highest_performing(name, bins, values)
+    highest_performing(name, q_bins, q_values)
 
     total_projects = len(set(sum(contributors.values(), [])))
 
@@ -197,7 +197,7 @@ def highest_performing(filename, bins, values):
     unpopular_bins = []
 
     for bin,value in zip(bins,values):
-        if len(value) < 5: continue
+        if len(value) < 3: continue
         popular_repos = len([v for v in value if v > 100])
         unpopular_repos = len([v for v in value if v < 100 ])
         print str(bin) + " " + str(popular_repos) + " " + str(unpopular_repos) + " " + str(len(value))
@@ -208,7 +208,7 @@ def highest_performing(filename, bins, values):
 
     for name, data in zip(["popular","unpopular"], [popular_bins,unpopular_bins]):
         fig = plt.figure()
-        plt.hist(data, len(bins), color="0.75")
+        plt.hist(data, 4, color="0.75")
         plt.xlabel("$Q$")
         plt.ylabel("% " + name)
         F = plt.gcf()

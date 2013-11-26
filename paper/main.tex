@@ -119,14 +119,14 @@ One of the main sources of information loss is multiple connections between proj
 \subsubsection{Graph Analysis}
 To support our hypotheses, there are several key metrics to be studied in regards to the aforementioned graph. Many of these metrics follow the work of Boccaletti \textit{et. al}\cite{boccaletti2006complex}, and other studies of similar graph types\cite{latora2001efficient,adamic1999small}.
 
-\noindent\\\textit{\textbf{Clustering Coefficient - Transitivity ($C^\Delta$)}}\\
+\noindent\\\textit{\textbf{Clustering Coefficient - Transitivity ($C$)}}\\
 We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
 \[C^\Delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
 This metric shows us how closely related, or ``clustered,'' that the graph is. It is also the probability that two nodes will be connected if they share a common neighbor\cite{newman2003properties}. In our context, if project $P_1$ and $P_2$ share a developer with $P_3$, this metric represents the probability that $P_1$ and $P_2$ will share a developer.
 
-\noindent\\\textit{\textbf{Clustering Coefficient - Average ($\overline{C^\Delta}$)}}\\
+\noindent\\\textit{\textbf{Clustering Coefficient - Average ($\overline{C}$)}}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
 
 Given our graph of nodes $P$ connected by edges $E$, or ${G=(P,E)}$, for any given node we can determine its \textit{neighborhood} ($N_i$), or the set of nodes directly connected to a given node.
@@ -147,12 +147,6 @@ Also, calculating the \textit{Path Length} ($L$) allows us to determine how far 
 
 Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only consider path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
 
-\noindent\\\textit{\textbf{Small World Quotient ($Q$)}}\\
-The \textit{Small World Quotient} ($Q$) is defined as the Clustering Coefficient ($C^\Delta$) divided by the  Average Path Length ($L$)\cite{watts1999small,watts1998collective}.
-
-\[Q =  \frac{C^\Delta}{L}\]
-
-Calculating $Q$ allows us to
 
 \begin{figure}
 \centering
@@ -204,8 +198,8 @@ Calculating $Q$ allows us to
 \end{figure}
 
 
-\noindent\\\textit{\textbf{Small-World-ness ($S^\Delta$)}}\\
-The definition of a \textit{small world} graph can be formalized by the following equations\cite{humphries2008network}.
+\noindent\\\textit{\textbf{Small World Quotient ($Q$)}}\\
+The definition of a \textit{small world} graph can be formalized by the following equations\cite{humphries2008network,uzzi2005collaboration}.
 
 First, let $\gamma^{\Delta}_g$ equal the ratio of the clustering coefficient of a given graph and a random graph.
 \[\gamma^{\Delta}_g = \frac{C^{\Delta}_g }{C^{\Delta}_{rand} } \]
@@ -213,10 +207,10 @@ First, let $\gamma^{\Delta}_g$ equal the ratio of the clustering coefficient of 
 Next apply a similar pattern to the average path length $\lambda_g$.
 \[\lambda_g = \frac{L_g }{L_{rand} } \]
 
-Finally, the ratio of the above calculations yields the small-world-ness, or $S^\Delta$, of the graph
-\[S^\Delta = \frac{\gamma^{\Delta}_g }{\lambda_g} \]
+Finally, the ratio of the above calculations yields the small world quotient, or $Q$, of the graph
+\[Q = \frac{\gamma^{\Delta}_g }{\lambda_g} \]
 
-We assume for throughout that any graph exhibiting $S^\Delta > 1$ is a small-world graph.
+We assume for throughout that any graph exhibiting $Qa > 1$ is a small-world graph.
 
 \noindent\\\textit{\textbf{Successful vs Unsuccessful}}\\
 To further explore the data, a comparion was made between \textit{successful} and \textit{unsuccessful} projects was made. We define \textit{successful} as any project with {$PopularityScore > 100$}, and \textit{unsuccessful} as any project with {$PopularityScore < 50$}. Given this view of the data, we can then make assertions about how we expect these types of projects to behave, given the stated hypothesis. More specifically, we can examine not only if the u-shaped curve holds for \textit{popular} projects, but if the inverse holds for \textit{unsuccessful} ones.
@@ -241,13 +235,11 @@ To further study these factors, we arranged interviews with two current professi
 
 \input{tables/subgraphs_summary}
 
-Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. First, $S^\Delta > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
+Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. Importantly, $Q > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
 
-$Q$ and $C^\Delta$ both indicate a non-normal distribution, as shown by the large standard deviation. This observation indicates a propensity towards the extremes of these measurements. This is further reinforced by the distribution of $Q$ shown in figure \ref{fig:q_distribution}. This figure indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1.\\
+$C$ and $\overline{C}$ both indicate values approaching 1. This observation indicates a high degree of clustering\cite{watts1998collective}. hat any indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1. Exploring this phenomenon further, we can derive that most graphs resemble the middle or the bottom graph in figure \ref{fig:example_graphs}, with relatively few resembling the top graph.
 
-Exploring this phenomenon further, follows that most graphs resemble the top or the middle graph in figure \ref{fig:example_graphs}, with relatively few resembling the bottom graph.
-
-To validate the hypothesis, we expect to find that medium values of $C^\Delta$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $C^\Delta$ values as shown in figure \ref{fig:cc_graph}. The $C^\Delta$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}. It is important to note, however that, the standard deviation is high, as shown in both \ref{fig:summary_stats} and the significant difference between the mean and median results.
+To validate the hypothesis, we expect to find that medium values of $Q$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $Q$ values as shown in figure \ref{fig:cc_graph}. The $Q$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}.
 
 \begin{figure}
 \begin{center}
@@ -257,28 +249,28 @@ To validate the hypothesis, we expect to find that medium values of $C^\Delta$ w
 \label{fig:cc_graph}
 \end{figure}
 
-Popular projects do appear to conform to the results found by Uzzi\cite{uzzi2005collaboration}. As show in figure \ref{fig:cc_unpopular}, $C^\Delta$ near the extremes (0.0 or 1.0) show a relatively low likelihood of being popular. As $C^\Delta$ values approach mid-range values, the probability of a project being a success increases greatly.
+Popular projects do appear to conform to the results found by Uzzi\cite{uzzi2005collaboration}. As show in figure \ref{fig:cc_popular}, $Q$ near the extremes show a relatively low likelihood of being popular. As $Q$ values approach mid-range values, the probability of a project being a success increases greatly.
 
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{images/freecode-popular.png}
 \end{center}
-\caption{$C^\Delta$ of Popular Projects}
+\caption{$Q$ of Popular Projects}
 \label{fig:cc_popular}
 \end{figure}
 
-The inverse is true of unpopular projects. As $C^\Delta$ near the extremes (0.0 or 1.0), a high probability of being unsuccessful is observed. Mid-valued $C^\Delta$ values indicate a substantially lower probability of being unsuccessful.
+The inverse is true of unpopular projects. As $Q$ near the extremes, a high probability of being unsuccessful is observed. Mid-valued $Q$ values indicate a substantially lower probability of being unsuccessful.
 
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.5\textwidth]{images/freecode-unpopular.png}
 \end{center}
-\caption{$C^\Delta$ of Unpopular Projects}
+\caption{$Q$ of Unpopular Projects}
 \label{fig:cc_unpopular}
 \end{figure}
 
-Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. This indicates that the majority of sub-graphs have a $Q$ value near either 0.0 or 1.0. 
+Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around $Q = 1$. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
 
 
 \begin{figure}
