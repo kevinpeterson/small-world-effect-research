@@ -213,8 +213,8 @@ def graph(name, data, popularity):
                 table.create_table("Summary", "fig:summary_stats", "P: %s, $P_c$: %s, C: %s" % (total_projects, N, len(contributors.keys())),
                                    OrderedDict([
                                        ("$Q$", q),
-                                       ("$C$", cc),
-                                       ("$\overline{C}$", avg_cc),
+                                       ("$C^{\Delta}$", cc),
+                                       ("$\overline{C^{\lambda}}$", avg_cc),
                                        ("$L$", pl),
                                        ("N", subgraph_node_number),
                                        ("E", subgraph_edge_number)
