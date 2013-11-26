@@ -42,7 +42,7 @@ We follow Uzzi's work, and expand it to software teams. We hypothesize that the 
 \subsection{Hypothesis}
 The formalization of the `small world' quality of a graph can be expressed by the \textit{Small World Quotient}, or $Q$\cite{watts1999small,watts1998collective}. The value $Q$ is calculated by dividing the clustering factor of graph by the average path length between nodes. Uzzi explored this value in graphs of Broadway productions\cite{uzzi2005collaboration}. His findings suggest that the success of Broadway productions is greatest when teams have a good mix of new and familiar members. Productions are less likely to be successful when team members are very familiar with each other. Also, probability of success drops much the same way when there is little familiarity between team members. This indicates that there is an optimal ratio of new and familiar members on a team -- or, an optimal value of $Q$ when related to performance.
 
-\textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the number of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
+\textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the amount of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be inverse U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
 
 \section{Methods}
 
@@ -90,29 +90,28 @@ We first consider the FreeCode FLOSSmole\cite{floss2006} data sets to be one lar
 
 The FreeCode data can be represented as a bipartite graph. A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
 
-A bipartite graph projection is necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the project nodes, or $P$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, projects are connected directly, with edges occurring if one or more developer is shared between the projects. It is important to note that the projection could have been done in terms of the contributors, not the projects. This would have led to a graph with nodes of contributors $C$, each being linked by sharing a common project. This approach is another common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data reprented in the original graph\cite{zhou2007bipartite}.\\
+A bipartite graph projection is necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the contributor nodes, or $C$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, contributors are connected directly, with edges occurring if a two contributors share one or more common projects. It is important to note that the projection could have been done in terms of the projects, not the contributors. This would have led to a graph with nodes of projects $P$, each being linked by sharing a common contributor. This approach is a common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data represented in the original graph\cite{zhou2007bipartite}.\\
 
-One of the main sources of information loss is multiple connections between projects, or projects that share multiple collaborators. When doing a bipartite projection based on projects $P$, a single link could represent one shared developer or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}.
+One of the main sources of information loss is multiple connections between contributors, or contributors that share multiple projects. When doing a bipartite projection based on contributors $C$, a single link could represent one shared project or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}.
 
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\tikzset{P/.style={circle,fill=lightgray!20}}
 \tikzset{C/.style={circle,fill=black!20}}
 
  [scale=.5,auto=left]
-  \node[P] (p1) at (-5,3)  {$P_1$};
-  \node[P] (p2) at (-3,2)  {$P_2$};
-  \node[P] (p3) at (-5,1)  {$P_3$};
-  \node[P] (p4) at (-2,1)  {$P_4$};
+  \node[C] (c1) at (-5,3)  {$C_1$};
+  \node[C] (c2) at (-3,2)  {$C_2$};
+  \node[C] (c3) at (-5,1)  {$C_3$};
+  \node[C] (c4) at (-2,1)  {$C_4$};
 
-  \draw ({p1}) -- ({p3});
-  \draw ({p1}) -- ({p2});
-  \draw ({p1}) -- ({p2});
-  \draw ({p2}) -- ({p3});
-  \draw ({p3}) -- ({p4});
+  \draw ({c1}) -- ({c3});
+  \draw ({c1}) -- ({c2});
+  \draw ({c1}) -- ({c2});
+  \draw ({c2}) -- ({c3});
+  \draw ({c3}) -- ({c4});
 \end{tikzpicture}
-\caption{A $P$ projection of the figure \ref{fig:example_bipartite_graph} bipartite graph}
+\caption{A contributor ($C$) projection of the figure~\ref{fig:example_bipartite_graph} bipartite graph}
 \label{fig:example_bipartite_projection_graph}
 \end{figure}
 
@@ -124,7 +123,7 @@ We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of
 \[C^\Delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
-This metric shows us how closely related, or ``clustered,'' that the graph is. It is also the probability that two nodes will be connected if they share a common neighbor\cite{newman2003properties}. In our context, if project $P_1$ and $P_2$ share a developer with $P_3$, this metric represents the probability that $P_1$ and $P_2$ will share a developer.
+This metric shows us how closely related, or ``clustered,'' that the graph is. It is also the probability that two nodes will be connected if they share a common neighbor\cite{newman2003properties}. In our context, if contributors $C_1$ and $C_2$ both collaborate with a common contributor w $C_3$, this metric represents the probability that $C_1$ and $C_2$ will collaborate.
 
 \noindent\\\textit{\textbf{Clustering Coefficient - Average ($\overline{C}$)}}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
@@ -245,7 +244,7 @@ To validate the hypothesis, we expect to find that medium values of $Q$ will be 
 \begin{center}
 \includegraphics[width=0.5\textwidth]{images/freecode-graph.png}
 \end{center}
-\caption{$C^\Delta$ and Project Popularity}
+\caption{$Q$ and Project Popularity}
 \label{fig:cc_graph}
 \end{figure}
 
@@ -261,7 +260,7 @@ Distribution of $Q$ values are shown in figure\ref{fig:q_distribution}. The valu
 \label{fig:q_distribution}
 \end{figure}
 
-Small-world-ness, or $S^\Delta$, is generally between 1 and 3 for most sub-graphs.
+Small-world-ness, or $Q$, is generally between 1 and 3 for most sub-graphs.
 
 
 \subsection{Qualitative}
