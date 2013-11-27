@@ -47,21 +47,19 @@ The formalization of the `small world' quality of a graph can be expressed by th
 \section{Methods}
 
 \subsection{Collection and Storage}
-Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. The data collection used was collected from the popular open source project site FreeCode,\footnote{http://freecode.com/} and contains data up to September, 2013. Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}. All source code pertaining to the collection and analysis can be found at \url{https://github.com/kevinpeterson/small-world-effect-research}.
+Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. Two datasets were analyzed -- data from from the popular open source project site \textit{Freecode},\footnote{http://freecode.com/}, and another from open source software repository \textit{SourceForge}. The Freecode dataset contained data up to September, 2013, while the SourceForge dataset was slightly older with data gathered on June 2009. Both datasets were chosen because they met two basic criteria: (1) they contained an exhaustive list of projects and contributors to those projects, and (2) they provided some sort of quantitative measure of project ``popularity." This popularity metric will be further described in sectiions below. Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}. All source code pertaining to the collection and analysis can be found at \url{https://github.com/kevinpeterson/small-world-effect-research}.
 
 \subsection{Analysis}
-The collected data was organized into a graph structure, with the nodes representing the projects and the edges representing one or more shared developer between projects. Various properties of the graph are analyzed, followed by a qualitative section to help link the quantitative analysis to subject matter expert experiences.
+The collected data was organized into a graph structure, with the nodes representing the collaborators and the edges representing one or more shared project between collaborators. Various properties of the graph are analyzed, followed by a qualitative section to help link the quantitative analysis to subject matter expert experiences.
 
 \subsubsection{Graph Structure}
-We first consider the FreeCode FLOSSmole\cite{floss2006} data sets to be one large graph. From this large disconnected graph, each connected subgraph is analyzed. Metrics are computed for each of these subgraphs, and a total subgraph performance value is computed by averaging the performance value of each graph in the subgraph. We measure a subgraph's performance by the FreeCode \textit{Popularity Score} metric, which is calculated the following formula\footnote{http://help.freecode.com/kb/statistics/how-do-you-measure-a-projects-popularity}:
-
-\[ ((record\ hits + URL\ hits) \cdot (followers + 1))^{1/2} \]
+For each dataset, we first considered the dataset to be one large graph. From this large disconnected graph, each connected subgraph was analyzed. Metrics were then computed for each of these subgraphs.
 
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\tikzset{P/.style={circle,fill=lightgray!20}}
-\tikzset{C/.style={circle,fill=black!20}}
+\tikzset{P/.style={circle,draw=black,fill=lightgray!20}}
+\tikzset{C/.style={circle,draw=black,fill=black!20}}
 
  [scale=.5,auto=left]
   \node[P] (p1) at (-5,3)  {$P_1$};
@@ -88,7 +86,7 @@ We first consider the FreeCode FLOSSmole\cite{floss2006} data sets to be one lar
 \label{fig:example_bipartite_graph}
 \end{figure}
 
-The FreeCode data can be represented as a bipartite graph. A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
+The Freecode data can be represented as a bipartite graph. A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
 
 A bipartite graph projection is necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the contributor nodes, or $C$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, contributors are connected directly, with edges occurring if a two contributors share one or more common projects. It is important to note that the projection could have been done in terms of the projects, not the contributors. This would have led to a graph with nodes of projects $P$, each being linked by sharing a common contributor. This approach is a common way of representing these bipartite graphs\cite{newman2001scientific}, and illustrates the fact that a bipartite projections are lossy compared to the data represented in the original graph\cite{zhou2007bipartite}.\\
 
@@ -97,7 +95,7 @@ One of the main sources of information loss is multiple connections between cont
 \begin{figure}
 \centering
 \begin{tikzpicture}
-\tikzset{C/.style={circle,fill=black!20}}
+\tikzset{C/.style={circle,draw=black,fill=black!20}}
 
  [scale=.5,auto=left]
   \node[C] (c1) at (-5,3)  {$C_1$};
@@ -150,7 +148,7 @@ Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortes
 \begin{figure}
 \centering
 \begin{tikzpicture}
-  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  [scale=.5,auto=left,every node/.style={circle,draw=black,fill=gray!20}]
   \node (n1) at (15,8) {1};
   \node (n2) at (12,6)  {2};
   \node (n3) at (9,5)  {3};
@@ -163,7 +161,7 @@ Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortes
 \end{tikzpicture}
 
 \begin{tikzpicture}
-  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  [scale=.5,auto=left,every node/.style={circle,draw=black,fill=gray!20}]
 
   \node (n1) at (15,8) {1};
   \node (n2) at (12,5)  {2};
@@ -180,7 +178,7 @@ Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortes
 \end{tikzpicture}
 
 \begin{tikzpicture}
-  [scale=.5,auto=left,every node/.style={circle,fill=gray!20}]
+  [scale=.5,auto=left,every node/.style={circle,draw=black,fill=gray!20}]
   \node (n1) at (15,7) {1};
   \node (n2) at (12,5)  {2};
   \node (n3) at (8,7)  {3};
@@ -211,8 +209,15 @@ Finally, the ratio of the above calculations yields the small world quotient, or
 
 We assume for throughout that any graph exhibiting {$Q > 1$} is a small-world graph.
 
-\noindent\\\textit{\textbf{Successful vs Unsuccessful}}\\
-To further explore the data, a comparion was made between \textit{successful} and \textit{unsuccessful} projects was made. We define \textit{successful} as any project with {$PopularityScore > 100$}, and \textit{unsuccessful} as any project with {$PopularityScore < 50$}. Given this view of the data, we can then make assertions about how we expect these types of projects to behave, given the stated hypothesis. More specifically, we can examine not only if the u-shaped curve holds for \textit{popular} projects, but if the inverse holds for \textit{unsuccessful} ones.
+\noindent\\\textit{\textbf{Performance}}\\
+To further explore the data, a measurement of project performance was needed. As the explored datasets consisted entirely of open source projects, research indicates that \textit{quality}, \textit{use}, \textit{user satisfaction}, and \textit{impact} are possible metrics to measure performance or \textit{success}\cite{crowston2003defining}.\\
+
+For both datasets, we base our performance metric on \textit{use}. For Freecode, we use the \textit{Popularity Score} metric, which is calculated the following formula\footnote{http://help.freecode.com/kb/statistics/how-do-you-measure-a-projects-popularity}:
+
+
+\[ ((record\ hits + URL\ hits) \cdot (followers + 1))^{1/2} \]
+
+For the SourceForge dataset, performance is based on the repository's internal \textit{rank} metric. Note that there was no attempt to normalize the two performance metrics between datasets. Because of this, no cross-dataset measurements can be made, as the performance metric is only valid in the context of the enclosing dataset. 
 
 
 \subsubsection{Qualitative Analysis}
@@ -282,10 +287,20 @@ Small-world-ness, or $Q$, is generally between 1 and 3 for most sub-graphs.
 
 \subsection{Qualitative}
 
+The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. There were are few re-occurring themes that we will base our analysis on\cite{stmartin_interview,stmartin_interview}:
+
+\noindent\\\textit{\textbf{New contributors are good, as long as the core team remains intact.}}\\
+
+\noindent\\\textit{\textbf{Teams can stagnate without new members.}}\\
+
+\noindent\\\textit{\textbf{Collaboration is key to performance.}}\\
+
+\noindent\\\textit{\textbf{Priority and timeline are strong drivers.}}\\
+
 \section{Conclusion}
 The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
 
-A futher area of study would be how this relates to previously defined \textit{success factors} in projects\cite{cooke2002real}.
+A further area of study would be how this relates to previously defined \textit{success factors} in projects\cite{cooke2002real}.
 
 
 \section{Acknowledgments}
