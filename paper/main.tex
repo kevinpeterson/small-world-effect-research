@@ -221,17 +221,18 @@ For the SourceForge dataset, performance is based on the repository's internal \
 
 
 \subsubsection{Qualitative Analysis}
-It has been asserted that people tend to make connections with people with whom they share similarities\cite{mcpherson2001birds}. This idea of homophily, however, needs to be further expanded before we can make assertions about correlations to performance. It has been shown that demographic homophily is complex to measure, correlates little to performance outcomes, and in fact correlate negatively\cite{reagans2004make,lawrence1997perspective}. For our purposes, it is much more appropriate to examine how teams best leverage similarities of knowledge and information, as the flow of these assets can be a key driver to success\cite{nissen2002extended}.\\
+So far we have explored, via data analysis, how closely project collaborators are connected to one another, and what correlations we can derive from this analysis. We have said little as to why these connections are made, how they are maintained, and what exactly a connection means at a personal level. Via qualitative analysis, we will attempt to enrich our data analysis by providing deeper context.\\
+A connection between two people is much more than an edge between two nodes in a graph. It has been asserted that people tend to make connections with people with whom they share similarities\cite{mcpherson2001birds}. This idea of homophily, however, needs to be further expanded before we can make assertions about correlations to performance. It has been shown that demographic homophily is complex to measure, correlates little to performance outcomes, and in fact correlate negatively\cite{reagans2004make,lawrence1997perspective}. For our purposes, it is much more appropriate to examine how teams best leverage similarities of knowledge and information, as the flow of these assets can be a key driver to success\cite{nissen2002extended}.\\
 In the same way we can explore the role of team familiarity. The two types of familiarity that we will explore are \textit{member} familiarity and \textit{task/project} familiarity\cite{harrison2003time}. These metrics, although not captured in data, could be important factors in \textit{how} teams form, and thus help us to understand \textit{why} teams perform the way that they do.\\
 
-To further study these factors, we arranged interviews with two current professionals in the field. Both have had experience with project management and are certified Project Management Professionals (PMP)\textregistered. We proposed to them the following questions:
+To further study these factors, we arranged interviews with two current professionals in the field. Both have had experience with project management and are certified Project Management Professionals (PMP)\textregistered. We proposed to them the following questions, in hopes of expanding further the questions posed above:
 
 \noindent\\\textit{Q1: How do development teams collaborate and share ideas?}\\
 \noindent\\\textit{Q2: Do teams generally remain intact over multiple projects, or do members often shuffle and re-combine?}\\
 \noindent\\\textit{Q3: When assembling a team, which is preferred -- members familiar with each other, or members familiar with the task or project.}\\
 \noindent\\\textit{Q4: What are some characteristics of a high performing team?}\\
 \noindent\\\textit{Q5: In your experience, is it better to (A) keep an innovative team intact, (B) periodically bring in new members or re-assign existing members, or (C) split up and disperse the team to as many other projects as possible?}\\
- 
+
 
 \section{Results}
 
@@ -244,7 +245,7 @@ Summary statistics for the graph analysis are captured in figure \ref{fig:summar
 
 $C^\Delta$ and $\overline{C^\lambda}$ both indicate values approaching 1. This observation indicates a high degree of clustering\cite{watts1998collective}. hat any indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1. Exploring this phenomenon further, we can derive that most graphs resemble the middle or the bottom graph in figure \ref{fig:example_graphs}, with relatively few resembling the top graph.
 
-To validate the hypothesis, we expect to find that medium values of $Q$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $Q$ values as shown in figure \ref{fig:cc_graph}. The $Q$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}.
+To validate the hypothesis, we expect to find that medium values of $Q$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $Q$ values as shown in figures \ref{fig:q_fc_graph} and \ref{fig:q_sf_graph}. The $Q$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}.
 
 \begin{figure}
 \begin{center}
@@ -263,7 +264,7 @@ To validate the hypothesis, we expect to find that medium values of $Q$ will be 
 \label{fig:q_sf_graph}
 \end{figure}
 
-Distribution of $Q$ values are shown in figures\ref{fig:fc_q_distribution,fig:sf_q_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around {$Q = 1$}. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
+Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and \ref{fig:q_sf_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around {$Q = 1$}. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
 
 
 \begin{figure}
@@ -286,16 +287,25 @@ Small-world-ness, or $Q$, is generally between 1 and 3 for most sub-graphs.
 
 
 \subsection{Qualitative}
-
-The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. There were are few re-occurring themes that we will base our analysis on\cite{stmartin_interview,stmartin_interview}:
+The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. It also helped us to get a deeper understand of what what we have found in the data analysis, as we could begin to build some workplace context into our results. There were are few re-occurring themes that we will base our analysis on\cite{stmartin_interview,stmartin_interview}:
 
 \noindent\\\textit{\textbf{New contributors are good, as long as the core team remains intact.}}\\
+Both participants mentioned the idea of keeping a ``core" team intact. This was certainly an often cited notion in both interviews. This concept appears to align with the idea of a \textit{core/periphery}\cite{borgatti2000models}, where the graph under study contains one (or many) tightly interconnected subgraphs, with less tightly connected nodes radiating out from this core.
+
+Although our data analysis does not include any examination of a core/periphery, it is an interesting direction for future research. Notably, has been suggested that individual performance in a group is highest if that individual is not in the core or the periphery, but somewhere in between\cite{cattani2008core}. This is especially interesting as this aligns with our hypothesis that intermediate values of $Q$ are optimal.
 
 \noindent\\\textit{\textbf{Teams can stagnate without new members.}}\\
+Both interview participants indicated that new members were essential in bringing new ideas to the team. A highly static team (or, a team with a high $Q$ value), runs the risk of falling behind the technology trends.
 
 \noindent\\\textit{\textbf{Collaboration is key to performance.}}\\
+Both interviewees suggested that team collaboration had a direct impact on performance. Teams that showed good collaboration both intra-team and inter-team were noted for their positive performance characteristics. Further exploration of this topic is needed to determine more fully the nature of this collaboration. Specifically, we know that high conflict is detrimental to team performance, especially in complex work environments\cite{de2003task}. A further research direction may be whether or not good team collaboration/communication promotes conflict avoidance, conflict resolution, or otherwise.
 
-\noindent\\\textit{\textbf{Priority and timeline are strong drivers.}}\\
+\noindent\\\textit{\textbf{Priority, focus, and timeline are strong drivers.}}\\
+Focus was specifically called out as an indicator of performance in one interview. Clear goals and a common objective were positive influencer, while continuously shifting focus was a negative influence. Research in this area suggests that creative teams have ``goals that are clear and compelling, but also open and challenging''\cite{isaksen2002climate}.
+
+Timeline and priority discussed as strong contributors to team success. Team building could be thought of as function of the timeline, meaning that as the timeline of the project increased, more time could be devoted to team building activities.
+
+It was also indicated that priority was a major factor. Different project priorities, and the resultant shifting of resources, had the possible effect of the weakening of string team's core members. This can be related to focus as well, as changing priorities can cause resource realignment and decreased overall focus.
 
 \section{Conclusion}
 The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
@@ -304,6 +314,7 @@ A further area of study would be how this relates to previously defined \textit{
 
 
 \section{Acknowledgments}
+We thank Praveen Mittal and John Kaman for their insight, guidance, and instruction, M Iftekhar (Ifte) Rana and Traci St. Martin for their time and expertise, and Rick Kiefer for his review.
 
 \bibliographystyle{plain}
 \bibliography{bibliography}
