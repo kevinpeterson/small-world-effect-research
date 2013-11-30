@@ -24,7 +24,7 @@ The Small World Network Effect in Software Project Teams
 \maketitle
 
 \begin{abstract}
-Team cohesion and the dynamics of team forming are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. If follows that visualizing software team members as a graph can give some insight as to what the optimal team conditions are. As team members move between projects, these graphs gets more and more connected as team members make connections. We show that this connectivity, known as the "small world effect," has a positive impact on team performance at when the connectivity levels are moderate. This aligns with similar research findings of non-software teams. We do, however, find high performance at the extremes of the connectivity range.
+Team cohesion and the dynamics of team forming are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. If follows that visualizing software team members as a graph can give some insight as to what the optimal team conditions are. As team members move between projects, these graphs become more and more connected as team members collaborate and form relationships. We show that this connectivity, known as the ``small world effect," has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
 \end{abstract}
 
 \noindent \\\textbf{Keywords.} Small World, Project Management, Software
@@ -38,11 +38,10 @@ Uzzi \cite{uzzi2005collaboration} expanded on this by exploring how these small 
 
 We follow Uzzi's work, and expand it to software teams. We hypothesize that the qualities of a small world graph that foster collaboration, creativity, and the efficiency of how knowledge is transfered\cite{latora2001efficient} will also apply to software project teams. In this work, we investigate the `small world' phenomenon quantitatively by exploring open source project data, and qualitatively by a series of interviews of subject matter experts, and look to compare Uzzi's findings to ours.
 
-
 \subsection{Hypothesis}
 The formalization of the `small world' quality of a graph can be expressed by the \textit{Small World Quotient}, or $Q$\cite{watts1999small,watts1998collective}. The value $Q$ is calculated by dividing the clustering factor of graph by the average path length between nodes. Uzzi explored this value in graphs of Broadway productions\cite{uzzi2005collaboration}. His findings suggest that the success of Broadway productions is greatest when teams have a good mix of new and familiar members. Productions are less likely to be successful when team members are very familiar with each other. Also, probability of success drops much the same way when there is little familiarity between team members. This indicates that there is an optimal ratio of new and familiar members on a team -- or, an optimal value of $Q$ when related to performance.
 
-\textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the amount of interest their projects generate, will increase as the level of $Q$ increases for the developer graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be inverse U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
+\textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the amount of interest their projects generate, will increase as the level of $Q$ increases for the contributor graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be inverse U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
 
 \section{Methods}
 
@@ -53,7 +52,7 @@ Data was collected using the freely available FLOSSmole\cite{floss2006} data set
 The collected data was organized into a graph structure, with the nodes representing the collaborators and the edges representing one or more shared project between collaborators. Various properties of the graph are analyzed, followed by a qualitative section to help link the quantitative analysis to subject matter expert experiences.
 
 \subsubsection{Graph Structure}
-For each dataset, we first considered the dataset to be one large graph. From this large disconnected graph, each connected subgraph was analyzed. Metrics were then computed for each of these subgraphs.
+For each dataset, we first considered the dataset to be one large graph. From this large disconnected graph, each connected subgraph was analyzed. Metrics were then computed for each of these subgraphs. In order to correctly compute the metrics below, a minimum subgraph size was required. Specifically, many of the graph metrics of interest measured ``triangles'' of nodes and their connections. This implies a subgraph of {$>= 3$} nodes is needed. Subgraphs of {$< 3$} nodes were not considered for analysis.
 
 \begin{figure}
 \centering
@@ -144,7 +143,6 @@ Also, calculating the \textit{Path Length} ($L$) allows us to determine how far 
 
 Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only consider path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
 
-
 \begin{figure}
 \centering
 \begin{tikzpicture}
@@ -194,7 +192,6 @@ Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortes
 \label{fig:example_graphs}
 \end{figure}
 
-
 \noindent\\\textit{\textbf{Small World Quotient ($Q$)}}\\
 The definition of a \textit{small world} graph can be formalized by the following equations\cite{humphries2008network,uzzi2005collaboration}.
 
@@ -214,11 +211,9 @@ To further explore the data, a measurement of project performance was needed. As
 
 For both datasets, we base our performance metric on \textit{use}. For Freecode, we use the \textit{Popularity Score} metric, which is calculated the following formula\footnote{http://help.freecode.com/kb/statistics/how-do-you-measure-a-projects-popularity}:
 
-
 \[ ((record\ hits + URL\ hits) \cdot (followers + 1))^{1/2} \]
 
 For the SourceForge dataset, performance is based on the repository's internal \textit{rank} metric. Note that there was no attempt to normalize the two performance metrics between datasets. Because of this, no cross-dataset measurements can be made, as the performance metric is only valid in the context of the enclosing dataset. 
-
 
 \subsubsection{Qualitative Analysis}
 So far we have explored, via data analysis, how closely project collaborators are connected to one another, and what correlations we can derive from this analysis. We have said little as to why these connections are made, how they are maintained, and what exactly a connection means at a personal level. Via qualitative analysis, we will attempt to enrich our data analysis by providing deeper context.\\
@@ -233,7 +228,6 @@ To further study these factors, we arranged interviews with two current professi
 \noindent\\\textit{Q4: What are some characteristics of a high performing team?}\\
 \noindent\\\textit{Q5: In your experience, is it better to (A) keep an innovative team intact, (B) periodically bring in new members or re-assign existing members, or (C) split up and disperse the team to as many other projects as possible?}\\
 
-
 \section{Results}
 
 \subsection{Quantitative}
@@ -241,11 +235,22 @@ To further study these factors, we arranged interviews with two current professi
 \input{tables/subgraphs_summary_freecode}
 \input{tables/subgraphs_summary_sf}
 
-Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}. Importantly, $Q > 1$ is observed for both the mean and the median, which meets the criteria for a small-world network\cite{humphries2008network}.\\
+Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}.  Statistics analyzed included:\\
+$Q$ - \textit{Small World Quotient}\\
+$C^\Delta$ - \textit{Clustering Coefficient - Transitivity}\\
+$\overline{C^\lambda}$ - \textit{Clustering Coefficient - Average}\\
+$L$ - \textit{Average Path Length}\\
+$N$ - \textit{Number of Nodes}\\
+$E$ - \textit{Number of Edges}\\
+As measured over the number of projects $P$, with the total number of contributors $C$. The number of connected subgraphs analyzed is shown as $P_c$.
 
-$C^\Delta$ and $\overline{C^\lambda}$ both indicate values approaching 1. This observation indicates a high degree of clustering\cite{watts1998collective}. hat any indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1. Exploring this phenomenon further, we can derive that most graphs resemble the middle or the bottom graph in figure \ref{fig:example_graphs}, with relatively few resembling the top graph.
+A mean value of $Q$ was observed to be $> 1$ for both data sets, which meets the criteria for a small-world network\cite{humphries2008network}. The median, however, is 1.0 in both cases, which does not match the small world network criteria. A possible explanation of this is the power law distribution of $Q$ observed in both data sets (figures \ref{fig:q_fc_distribution} and \ref{fig:q_sf_distribution}. This indicates that a large proportion of $Q$ values are around 1.\\
 
-To validate the hypothesis, we expect to find that medium values of $Q$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $Q$ values as shown in figures \ref{fig:q_fc_graph} and \ref{fig:q_sf_graph}. The $Q$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}.
+$C^\Delta$ and $\overline{C^\lambda}$ both indicate values approaching 1. This observation indicates a high degree of clustering\cite{watts1998collective}. hat any indicates that the majority of subgraphs have a $Q$ and $C^\Delta$ value of close to either 0 or 1. Exploring this phenomenon further, we can derive that most graphs resemble the middle or the bottom graph in figure \ref{fig:example_graphs}, with relatively few resembling the top graph.\\
+
+Note that $P_c$ values are relatively small compared to $P$ and $C$ values. It would be intuitive to assume that {$C \times P_c \approx P$} -- in other words, if we split the entire graph into connected subgraphs, the number of subgraphs multiplied by the average number of nodes (contributors) per subgraph should equal the total number of contributors ($C$). This, however, is not the case. In fact, $P_c$ is notably smaller than expected. Recall that during analysis, subgraphs of {$< 3$} nodes were not considered. We can assume then that a large number of subgraphs are very small, with only one or two nodes. Further analysis is needed to fully understand the implications of this.
+
+To validate the hypothesis, we expect to find that intermediate values of $Q$ will be correlated with more popular projects. To explore this possibility, we first compare the popularity given $Q$ values as shown in figures \ref{fig:q_fc_graph} and \ref{fig:q_sf_graph}. The $Q$ values do display the U-shaped characteristic as compared to popularity, which aligns with the findings of Uzzi \textit{et. al}\cite{uzzi2005collaboration}.
 
 \begin{figure}
 \begin{center}
@@ -254,7 +259,6 @@ To validate the hypothesis, we expect to find that medium values of $Q$ will be 
 \caption{Freecode $Q$ and Project Popularity}
 \label{fig:q_fc_graph}
 \end{figure}
-
 
 \begin{figure}
 \begin{center}
@@ -265,7 +269,6 @@ To validate the hypothesis, we expect to find that medium values of $Q$ will be 
 \end{figure}
 
 Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and \ref{fig:q_sf_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around {$Q = 1$}. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
-
 
 \begin{figure}
 \begin{center}
@@ -285,9 +288,8 @@ Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and 
 
 Small-world-ness, or $Q$, is generally between 1 and 3 for most sub-graphs.
 
-
 \subsection{Qualitative}
-The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. It also helped us to get a deeper understand of what what we have found in the data analysis, as we could begin to build some workplace context into our results. There were are few re-occurring themes that we will base our analysis on\cite{stmartin_interview,stmartin_interview}:
+The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. It also helped us to get a deeper understanding of what we had found in the data analysis, as we could begin to build some workplace context into our results. There were are few re-occurring themes from which we will base our analysis\cite{stmartin_interview,rana_interview}:
 
 \noindent\\\textit{\textbf{New contributors are good, as long as the core team remains intact.}}\\
 Both participants mentioned the idea of keeping a ``core" team intact. This was certainly an often cited notion in both interviews. This concept appears to align with the idea of a \textit{core/periphery}\cite{borgatti2000models}, where the graph under study contains one (or many) tightly interconnected subgraphs, with less tightly connected nodes radiating out from this core.
@@ -308,10 +310,12 @@ Timeline and priority discussed as strong contributors to team success. Team bui
 It was also indicated that priority was a major factor. Different project priorities, and the resultant shifting of resources, had the possible effect of the weakening of string team's core members. This can be related to focus as well, as changing priorities can cause resource realignment and decreased overall focus.
 
 \section{Conclusion}
-The project graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs\cite{madey2002open}.
+Our hypothesis theorizes that medium values of clustering between collaborators on projects is optimal for project performance. The data analysis, specifically figures \ref{fig:q_fc_graph} and \ref{fig:q_sf_graph}, seem to support this claim. Also, qualitative research seems to support the hypothesis as well. Our interviews revealed that from experience, teams perform best when a stable core is periodically augmented with new members. This would be a qualitative representation of a intermediate $Q$ value -- significant clustering but not to the extent of isolation. Given both the quantitative and qualitative analysis, we can assert to align with Uzzi's findings\cite{uzzi2005collaboration} and show that intermediate values of $Q$ are correlated with increased project performance.
 
-A further area of study would be how this relates to previously defined \textit{success factors} in projects\cite{cooke2002real}.
+\section{Future Research}
+Social networks, interpersonal relationships, and software development are all complex topics. We have explored a narrow slice of these in context, and there are some important areas of future exploration. First, the contributor graph contains a large amount of subgraphs, and as a whole appears less clustered than some other observed social network graphs -- consistent with Madey's findings\cite{madey2002open} on SourceForge data. As noted in our analysis, a large number of these subgraphs have only one or two contributors. This implies that a large number of contributors work alone and on a single project. We do not, with the current analysis, know how (or if) this degrades the quality of our findings.\\
 
+A further area of study would be how our findings relate to previously defined \textit{success factors} in projects\cite{cooke2002real}. Also, we do not know directly \textit{how} intermediate values of $Q$ influence performance -- we can only observe a quantitative and qualitative correlation. We make a tacit equivalence to clustering and knowledge sharing, but we have not directly observed that in our analysis. Research does suggest that social factors are knowledge sharing motivators\cite{hendriks1999share}, but how that relates specifically to our work is unexplored here.\\
 
 \section{Acknowledgments}
 We thank Praveen Mittal and John Kaman for their insight, guidance, and instruction, M Iftekhar (Ifte) Rana and Traci St. Martin for their time and expertise, and Rick Kiefer for his review.

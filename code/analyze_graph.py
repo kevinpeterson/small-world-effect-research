@@ -128,7 +128,7 @@ def compute_random_graph(nodes, edges, g):
         assert (edges == (nodes - 1))
         return g
 
-def graph(name, data, popularity):
+def graph(title, name, data, popularity):
     contributors = data[0]
     projects = data[1]
     G = nx.Graph()
@@ -210,7 +210,7 @@ def graph(name, data, popularity):
     total_projects = len(set(sum(contributors.values(), [])))
 
     write_table("subgraphs_summary_" + name,
-                table.create_table("Summary", "fig:summary_stats", "P: %s, $P_c$: %s, C: %s" % (total_projects, N, len(contributors.keys())),
+                table.create_table(title + " Summary", "fig:"+name+"_summary_stats", "P: %s, $P_c$: %s, C: %s" % (total_projects, N, len(contributors.keys())),
                                    OrderedDict([
                                        ("$Q$", q),
                                        ("$C^{\Delta}$", cc),
@@ -240,14 +240,18 @@ def create_graph(filename, x, y):
     avg = [np.mean(j, axis=None) for j in y]
     median = [np.median(j) for j in y]
 
-    fig = plt.figure()
-    plt.plot(x,avg,'-')
-    plt.plot(x,median,'--')
-    plt.xlabel("$Q$")
-    plt.ylabel("popularity")
+    fig, ax = plt.subplots()
+    ax.plot(x,avg,'k-', label="Mean")
+    ax.plot(x,median,'k--', label="Median")
+
+    ax.set_xlabel("$Q$")
+    ax.set_ylabel("popularity")
+
+    ax.legend(shadow=True)
+
     F = plt.gcf()
     F.savefig("../paper/images/"+filename+"-graph.png")
     plt.close(fig)
 
-graph("freecode", read_contributors_fc(), read_stats_fc())
-graph("sf", read_contributors_sf(), read_stats_sf())
+graph("Freecode", "freecode", read_contributors_fc(), read_stats_fc())
+graph("SourceForge", "sf", read_contributors_sf(), read_stats_sf())
