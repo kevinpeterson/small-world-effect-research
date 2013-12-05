@@ -24,15 +24,15 @@ The Small World Network Effect in Software Project Teams
 \maketitle
 
 \begin{abstract}
-Team cohesion and the dynamics of team forming are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. Because of these relationships, visualizing software team members as a graph may be a natural way to explore these relationships. As team members move between projects, these graphs become more and more connected as team members collaborate and form relationships. We show that this connectivity, known as the ``small world effect," has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
+Team cohesion and the dynamics of team formation are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. Because of these relationships, visualizing software team members as a graph may be a natural way to explore these relationships. As team members move between projects, these graphs become more and more connected as team members collaborate and form relationships. We show that this connectivity, known as the ``small world effect," has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
 \end{abstract}
 
 \noindent \\\textbf{Keywords.} Small World, Project Management, Software
 
 \section{Introduction}
-A social network is a graph of people and the connections between them. The dynamics of social networks have proved to be an important research topic for many different areas of study, from academic publication\cite{barabasi2002evolution}, to the success of Broadway musicals\cite{uzzi2005collaboration}. In general, a social network is important to understanding how ideas and influence are spread\cite{kempe2003maximizing}. Given that, we can begin to investigate the best conditions for optimal group performance within these networks.
+A social network is a graph of people and the connections between them. The dynamics of social networks have proven to be an important research topic for many different areas of study, from academic publication\cite{barabasi2002evolution}, to the success of Broadway musicals\cite{uzzi2005collaboration}. In general, a social network is important to understanding how ideas and influence are spread\cite{kempe2003maximizing}. Given that, we can begin to investigate the best conditions for optimal group performance within these networks.
 
-A ``small world'' network is a social network characterized by high clustering of graph nodes paired with a short average path between nodes\cite{watts1998collective}. ``Clustering'' in this context means how closely nodes in the graph are related to each other, or ``the friend of my friend is also my friend.'' ``Average path length'' is the the shortest route between all possible nodes, averaged over the entire graph. Milgram, in his seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}, or in other words, the average path length between any two people.
+A ``small world'' network is a social network characterized by high clustering of graph nodes paired with a short average path between them\cite{watts1998collective}. ``Clustering'' in this context means how closely nodes in the graph are related to each other, or ``the friend of my friend is also my friend.'' ``Average path length'' is the shortest route between all possible nodes, averaged over the entire graph. Milgram, in his seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}, or in other words, the average path length between any two people is 6.
 
 Uzzi \cite{uzzi2005collaboration} expanded on this by exploring how these small world networks correlate to collaboration and creativity. In his study, the network of artists involved in the making of Broadway musicals from 1945 to 1989 were studied. Performance was then measured based on financial success and critical acclaim, and statistically compared to the clustering and path length of the graph.
 
@@ -46,13 +46,13 @@ The formalization of the ``small world'' quality of a graph can be expressed by 
 \section{Methods}
 
 \subsection{Collection and Storage}
-Data was collected using the freely available FLOSSmole\cite{floss2006} data sets of free and open source projects. Two datasets were analyzed -- data from from the popular open source project site \textit{Freecode}\footnote{http://freecode.com/}, and another from open source software repository \textit{SourceForge}\footnote{http://sourceforge.net/}. The Freecode dataset contained data up to September, 2013, while the SourceForge dataset was slightly older with data gathered on June 2009. Both datasets were chosen because they met two basic criteria: (1) they contained an exhaustive list of projects and contributors to those projects, and (2) they provided some sort of quantitative measure of project ``popularity." This popularity metric will be further described in sections below. Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}. All source code pertaining to the collection and analysis can be found at \url{https://github.com/kevinpeterson/small-world-effect-research}.
+Data was collected using the freely available FLOSSmole\cite{floss2006} datasets of free and open source projects. Two datasets were analyzed -- data from from the popular open source project site \textit{Freecode}\footnote{http://freecode.com/}, and another from open source software repository \textit{SourceForge}\footnote{http://sourceforge.net/}. The Freecode dataset contained data up to September, 2013, while the SourceForge dataset was slightly older with data gathered on June 2009. Both datasets were chosen because they met two basic criteria: (1) they contained an exhaustive list of projects and contributors to those projects, and (2) they provided some sort of quantitative measure of project ``popularity." This popularity metric will be further described in sections below. Results were analyzed using the Python graph processing packaged NetworkX\cite{hagberg-2008-exploring}. All source code pertaining to the collection and analysis can be found at \url{https://github.com/kevinpeterson/small-world-effect-research}.
 
 \subsection{Analysis}
-The collected data was organized into a graph structure, with the nodes representing the contributors and the edges representing one or more shared project between contributors. For our purposes, ``contributors'' includes any person that has been identified as being associated with the project by the project hosting site (Freecode and SourceForge, for our purposes). It is important to note that ``contributor'' does not always imply code contributions -- as issue reporting and documentation, among other things, are valid contributions. Various properties of the graph were analyzed, followed by a qualitative section to help link the quantitative analysis to subject matter expert experiences.
+The collected data was organized into a graph structure, with the nodes representing the contributors and the edges representing one or more shared project between contributors. For our purposes, ``contributors'' includes any person that has been identified as being associated with the project by the project hosting site (Freecode and SourceForge). It is important to note that ``contributor'' does not always imply code contributions -- as issue reporting and documentation, among other things, are valid contributions. Various properties of the graph were analyzed, followed by a qualitative section to help link the quantitative analysis to subject matter expert experiences.
 
 \subsubsection{Graph Structure}
-For each dataset, we first considered the dataset to be one large graph. It was observed that the contributor graph was ``disconnected,'' meaning that there was not a path between all possible nodes. From this large disconnected graph, we can extract a set of connected subgraphs, where each connected subgraph was analyzed. Metrics were then computed for each of these subgraphs. In order to correctly compute the metrics below, a minimum subgraph size was required. Specifically, many of the graph metrics of interest measured ``triangles'' of nodes and their connections. This implies a subgraph of {$>= 3$} nodes is needed. Subgraphs of {$< 3$} nodes were not considered for analysis.
+For each dataset, we first considered the dataset to be one large graph. It was observed that the contributor graph was ``disconnected,'' meaning that there was not a path between all possible nodes. From this large disconnected graph, we extracted a set of connected subgraphs, where each connected subgraph was analyzed. Metrics were then computed for each of these subgraphs. In order to correctly compute the metrics below, a minimum subgraph size was required. Specifically, many of the graph metrics of interest measured ``triangles'' of nodes and their connections. This implies a subgraph of {$>= 3$} nodes is needed. Subgraphs of {$< 3$} nodes were not considered for analysis.
 
 \begin{figure}
 \centering
@@ -85,11 +85,11 @@ For each dataset, we first considered the dataset to be one large graph. It was 
 \label{fig:example_bipartite_graph}
 \end{figure}
 
-The contributor/project data can be represented as a bipartite graph. A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, and set $C$ be the set of all contributors. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
+The contributor/project data can be represented as a bipartite graph. A bipartite graph is a specialized type of graph containing two disjoint sets of verticies. This can be denoted by ${G=(P,C,E)}$, where ${P \cap C = \emptyset}$. For our purposes, let set $P$ be the set of all projects, set $C$ be the set of all contributors, and $E$ the edges that connect them. Each project node, therefore, is only connected to contributor nodes, and vice versa, as show in figure \ref{fig:example_bipartite_graph}. In other words, the sets $P$ and $C$ are disjoint. This bipartite representation is typical of what is found in social and collaboration networks\cite{ramasco2004self}.  
 
-A bipartite graph projection is necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the contributor nodes, or $C$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, contributors are connected directly, with edges occurring if a two contributors share one or more common projects. It is important to note that the projection could have been done in terms of the projects, not the contributors. This would have led to a graph with nodes of projects $P$, each being linked by sharing a common contributor. This approach is a common way of representing these bipartite graphs\cite{newman2001scientific}, although it is known that bipartite projections are lossy compared to the data represented in the original graph\cite{zhou2007bipartite}.\\
+A bipartite graph projection is necessary to further analyze the graph. A bipartite projection involves taking the disjoint node sets $P$ and $C$, and representing the graph as relationships between only one of those sets of nodes. A projection onto the contributor nodes, or $C$, of figure \ref{fig:example_bipartite_graph} is show in figure \ref{fig:example_bipartite_projection_graph}. Here, contributors are connected directly, with edges occurring if a two contributors share one or more common projects. It is important to note that the projection could have been done in terms of the projects, instead of the contributors. This would have led to a graph with nodes of projects $P$, each being linked by sharing a common contributor. Projection is a common way of representing these bipartite graphs\cite{newman2001scientific}, although it is known that bipartite projections are lossy compared to the data represented in the original graph\cite{zhou2007bipartite}.\\
 
-One of the main sources of information loss is multiple connections between contributors, or contributors that share multiple projects. When doing a bipartite projection based on contributors $C$, a single link could represent one shared project or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}.
+One of the main sources of information loss is multiple connections between contributors, or contributors that share multiple projects. When doing a bipartite projection based on contributors $C$, a single link could represent one shared project or many. This is a source of data loss in the projection. The simple approach is to treat one connection the same as many connections between nodes. This is straightforward but lossy\cite{zhou2007bipartite,grossman1995portion}. A better approach is to assign a \textit{weight} to each edge representing repeated links -- or in our case -- multiple shared collaborators\cite{zha2001bipartite,barrat2004architecture}. 
 
 \begin{figure}
 \centering
@@ -116,11 +116,11 @@ One of the main sources of information loss is multiple connections between cont
 To support our hypothesis, there are several key metrics to be studied in regards to the aforementioned graph. Many of these metrics follow the work of Boccaletti \textit{et. al}\cite{boccaletti2006complex}, and other studies of similar graph types\cite{latora2001efficient,adamic1999small}.
 
 \noindent\\\textit{\textbf{Clustering Coefficient - Transitivity ($C^\Delta$)}}\\
-We calculate the \textit{Clustering Coefficient} (or $C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
+We calculate the \textit{Clustering Coefficient} ($C^\Delta$) as a measure of the proportion of closed triangles in a graph\cite{newman2003structure}:
 \[C^\Delta = 3 \times \frac{\text{number of triangles}}
                     {\text{number of connected triples}}\]
 
-This metric shows us how closely related, or ``clustered,'' that the graph is. It is also the probability that two nodes will be connected if they share a common neighbor\cite{newman2003properties}. In our context, if contributors $C_1$ and $C_2$ both collaborate with a common contributor w $C_3$, this metric represents the probability that $C_1$ and $C_2$ will collaborate.
+This metric shows us how closely related, or ``clustered,'' that the graph is. It is also the probability that two nodes will be connected if they share a common neighbor\cite{newman2003properties}. In our context, if contributors $C_1$ and $C_2$ both collaborate with a common contributor $C_3$, this metric represents the probability that $C_1$ and $C_2$ will collaborate.
 
 \noindent\\\textit{\textbf{Clustering Coefficient - Average ($\overline{C^{\lambda}}$)}}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}.
@@ -131,7 +131,7 @@ Given our graph of nodes $P$ connected by edges $E$, or ${G=(P,E)}$, for any giv
 Given this \textit{neighborhood}, we can then calculate how closely connected the nodes are. To do this, we take the number of actual connections between neighbors divided by the total possible number of connections, where $k_i$ represents the count of the neighbors of a node, or {$k_i = |N_i|$}
 \[ C^{\lambda}_i = \frac{2|\{e_{jk}: v_j,v_k \in N_i, e_{jk} \in E\}|}{k_i(k_i-1)} \]
 
-From this \textit{Local Clustering Coefficient} $C_i$, we can then take the average over the entire set of nodes in the graph.
+From this \textit{Local Clustering Coefficient} $C^{\lambda}_i$, we can then take the average over the entire set of nodes in the graph.
 \[ \overline{C^\lambda} = \frac{1}{|P|}\sum^{|P|}_{i=1}C^{\lambda}_i \]
 
 It is important to note that although the terminology is similar\cite{uzzi2005collaboration}, $\overline{C^\lambda}$ and $C^\Delta$ are different measurements. Unless otherwise noted, the Transitivity version of this metric ($C^\Delta$) will be used for all further calculations and metrics.
@@ -141,7 +141,7 @@ Calculating the \textit{Path Length} ($L$) allowed us to determine how far remov
 
 \[L = \frac{1}{|P| \cdot (|P|-1)} \sum_{i \neq j}\lambda(v_i,v_j)\]
 
-Where {$v_i \in P$}, {$v_j \in P$}, and {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only considered path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
+Where given {$v_i \in P$}, {$v_j \in P$}, the function {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only considered path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
 
 \begin{figure}
 \centering
@@ -204,7 +204,7 @@ Next apply a similar pattern to the average path length $\lambda_g$.
 Finally, the ratio of the above calculations yields the small world quotient, or $Q$, of the graph
 \[Q = \frac{\gamma^{\Delta}_g }{\lambda_g} \]
 
-We assume for throughout that any graph exhibiting {$Q > 1$} is a small world graph.
+We assume throughout that any graph exhibiting {$Q > 1$} is a small world graph.
 
 \noindent\\\textit{\textbf{Performance}}\\
 To further explore the data, a measurement of project performance was needed. As the explored datasets consisted entirely of open source projects, research indicates that \textit{quality}, \textit{use}, \textit{user satisfaction}, and \textit{impact} are possible metrics to measure performance or \textit{success}\cite{crowston2003defining}.\\
@@ -220,11 +220,11 @@ So far we have explored, via data analysis, how closely project collaborators ar
 A connection between two people is much more than an edge between two nodes in a graph. It has been asserted that people tend to make connections with people with whom they share similarities\cite{mcpherson2001birds}. This idea of homophily, however, needs to be further expanded before we can make assertions about correlations to performance. It has been shown that demographic homophily is complex to measure, correlates little to performance outcomes, and in fact correlates negatively\cite{reagans2004make,lawrence1997perspective}. For our purposes, it is much more appropriate to examine how teams best leverage similarities of knowledge and information, as the flow of these assets can be a key driver to success\cite{nissen2002extended}.\\
 In the same way we can explore the role of team familiarity. The two types of familiarity that we will explore are \textit{member} familiarity and \textit{task/project} familiarity\cite{harrison2003time}. These metrics, although not captured in data, could be important factors in \textit{how} teams form, and thus help us to understand \textit{why} teams perform the way that they do.\\
 
-To further study these factors, we arranged interviews with two current professionals in the field. Both have had experience with project management and are certified Project Management Professionals (PMP)\textregistered. We proposed to them the following questions, with the intent of expanding further the questions posed above:
+To further study these factors, we arranged interviews with two current professionals in the field. Both have had experience with project management and are certified Project Management Professionals (PMP\textregistered). We proposed to them the following questions, with the intent of expanding further the questions posed above:
 
 \noindent\\\textit{Q1: How do development teams collaborate and share ideas?}\\
 \noindent\\\textit{Q2: Do teams generally remain intact over multiple projects, or do members often shuffle and re-combine?}\\
-\noindent\\\textit{Q3: When assembling a team, which is preferred -- members familiar with each other, or members familiar with the task or project.}\\
+\noindent\\\textit{Q3: When assembling a team, which is preferred -- members familiar with each other, or members familiar with the task or project?}\\
 \noindent\\\textit{Q4: What are some characteristics of a high performing team?}\\
 \noindent\\\textit{Q5: In your experience, is it better to (A) keep an innovative team intact, (B) periodically bring in new members or re-assign existing members, or (C) split up and disperse the team to as many other projects as possible?}\\
 
@@ -235,7 +235,7 @@ To further study these factors, we arranged interviews with two current professi
 \input{tables/subgraphs_summary_freecode}
 \input{tables/subgraphs_summary_sf}
 
-Summary statistics for the graph analysis are captured in figure \ref{fig:summary_stats}.  Statistics analyzed included:\\
+Summary statistics for the graph analysis are captured in tables \ref{fig:freecode_summary_stats} and \ref{fig:sf_summary_stats}.  Statistics analyzed included:\\
 $Q$ - \textit{Small World Quotient}\\
 $C^\Delta$ - \textit{Clustering Coefficient - Transitivity}\\
 $\overline{C^\lambda}$ - \textit{Clustering Coefficient - Average}\\
@@ -268,7 +268,7 @@ To validate the hypothesis, we expect to find that intermediate values of $Q$ wi
 \label{fig:q_sf_graph}
 \end{figure}
 
-Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and \ref{fig:q_sf_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around {$Q = 1$}. This indicates that many graphs are close to the delineation of being considered small-world\cite{humphries2008network}.
+Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and \ref{fig:q_sf_distribution}. The values of $Q$ generally follow a power-law distribution, with most values being at our around {$Q = 1$}. This indicates that many graphs are close to the delineation of being considered small world\cite{humphries2008network}.
 
 \begin{figure}
 \begin{center}
@@ -287,7 +287,7 @@ Distribution of $Q$ values are shown in figures \ref{fig:q_fc_distribution} and 
 \end{figure}
 
 \subsection{Qualitative}
-The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. They also helped us to obtain a deeper understanding of what we had found in the data analysis, as we could begin to build some workplace context into our results. There were are few re-occurring themes from which we will base our analysis\cite{stmartin_interview,rana_interview}:
+The research interviews provided a look into how some of these quantitative findings translate into actual industry practice. They also helped us to obtain a deeper understanding of what we had found in the data analysis, as we could begin to build some workplace context into our results. There were several re-occurring themes from which we will base our analysis\cite{stmartin_interview,rana_interview}:
 
 \noindent\\\textit{\textbf{New contributors are good, as long as the core team remains intact.}}\\
 Both participants mentioned the idea of keeping a ``core" team intact. This was certainly an often cited notion in both interviews. This concept appears to align with the idea of a \textit{core/periphery}\cite{borgatti2000models}, where the graph under study contains one (or many) tightly interconnected subgraphs, with less tightly connected nodes radiating out from this core.
@@ -305,7 +305,7 @@ Focus was specifically called out as an indicator of performance in one intervie
 
 Timeline and priority were discussed as strong factors in team success. Team building could be thought of as function of the timeline -- meaning that as the timeline of the project increased, more time could be devoted to team building activities.
 
-It was also indicated that priority was a major factor. Different project priorities, and the resultant shifting of resources, had the possible effect of the weakening of string team's core members. This can be related to focus as well, as changing priorities can cause resource realignment and decreased overall focus.
+It was also indicated that priority was a major factor. Different project priorities, and the resultant shifting of resources, had the possible effect of weakening a strong team's core members. This can be related to focus as well, as changing priorities can cause resource realignment and decreased overall focus.
 
 \section{Conclusion}
 Our hypothesis theorizes that medium values of clustering between collaborators on projects is optimal for project performance. The data analysis, specifically figures \ref{fig:q_fc_graph} and \ref{fig:q_sf_graph}, seem to support this claim. Also, qualitative research seems to support the hypothesis as well. Our interviews revealed that from experience, teams perform best when a stable core is periodically augmented with new members. This would be a qualitative representation of a intermediate $Q$ value -- significant clustering but not to the extent of isolation. Given both the quantitative and qualitative analysis, we can assert to align with Uzzi's findings\cite{uzzi2005collaboration} and show that intermediate values of $Q$ are correlated with increased project performance.
