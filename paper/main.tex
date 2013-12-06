@@ -24,7 +24,7 @@ The Small World Network Effect in Software Project Teams
 \maketitle
 
 \begin{abstract}
-Team cohesion and the dynamics of team formation are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. Because of these relationships, visualizing software team members as a graph may be a natural way to explore these relationships. As team members move between projects, these graphs become more and more connected as team members collaborate and form relationships. We show that this connectivity, known as the ``small world effect," has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
+Team cohesion and the dynamics of team formation are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. Because of these relationships, representing software team members as a graph may be a natural way to explore these relationships. As team members move between projects, these graphs become more and more connected as team members collaborate and form new relationships. We show that this connectivity, known as the ``small world effect," has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
 \end{abstract}
 
 \noindent \\\textbf{Keywords.} Small World, Project Management, Software
@@ -32,14 +32,14 @@ Team cohesion and the dynamics of team formation are important parts of any proj
 \section{Introduction}
 A social network is a graph of people and the connections between them. The dynamics of social networks have proven to be an important research topic for many different areas of study, from academic publication\cite{barabasi2002evolution}, to the success of Broadway musicals\cite{uzzi2005collaboration}. In general, a social network is important to understanding how ideas and influence are spread\cite{kempe2003maximizing}. Given that, we can begin to investigate the best conditions for optimal group performance within these networks.
 
-A ``small world'' network is a social network characterized by high clustering of graph nodes paired with a short average path between them\cite{watts1998collective}. ``Clustering'' in this context means how closely nodes in the graph are related to each other, or ``the friend of my friend is also my friend.'' ``Average path length'' is the shortest route between all possible nodes, averaged over the entire graph. Milgram, in his seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}, or in other words, the average path length between any two people is 6.
+A ``small world'' network is a social network characterized by high clustering of graph nodes paired with a short average path between them\cite{watts1998collective}. ``Clustering'' in this context means how closely nodes in the graph are related to each other, or ``the friend of my friend is also my friend.'' ``Average path length'' is the shortest route between all possible nodes, averaged over the entire graph. For example, Milgram, in his seminal study, found that any two people are linked through a chain of friends and acquaintances on average of 6 people long\cite{milgram1967small}, or in other words, the average path length between any two people is 6.
 
-Uzzi \cite{uzzi2005collaboration} expanded on this by exploring how these small world networks correlate to collaboration and creativity. In his study, the network of artists involved in the making of Broadway musicals from 1945 to 1989 were studied. Performance was then measured based on financial success and critical acclaim, and statistically compared to the clustering and path length of the graph.
+Uzzi \cite{uzzi2005collaboration} expanded on this by exploring how these small world networks correlate to collaboration and creativity. In his study, the network of artists involved in the making of Broadway musicals from 1945 to 1989 were analyzed. Performance was then measured based on financial success and critical acclaim, and statistically compared to the clustering and path length of the graph.
 
 We follow Uzzi's work, and expand it to software teams. We hypothesize that the qualities of a small world graph that foster collaboration, creativity, and the efficiency of how knowledge is transfered\cite{latora2001efficient} will also apply to software project teams. In this work, we investigate the ``small world'' phenomenon quantitatively by exploring open source project data, and qualitatively by a series of interviews of subject matter experts, and look to compare Uzzi's findings to ours.
 
 \subsection{Hypothesis}
-The formalization of the ``small world'' quality of a graph can be expressed by the \textit{Small World Quotient}, or $Q$\cite{watts1999small,watts1998collective}. The value $Q$ is calculated by dividing the clustering factor of graph by the average path length between nodes. Uzzi explored this value in graphs of Broadway productions\cite{uzzi2005collaboration}. His findings suggest that the success of Broadway productions is greatest when teams have a good mix of new and familiar members. Productions are less likely to be successful when team members are very familiar with each other. Also, probability of success drops much the same way when there is little familiarity between team members. This indicates that there is an optimal ratio of new and familiar members on a team -- or, an optimal value of $Q$ when related to performance. Thus, we formulate our hypothesis:\\
+The formalization of the ``small world'' quality of a graph can be expressed by the \textit{Small World Quotient}, or $Q$\cite{watts1999small,watts1998collective}. The value $Q$ is calculated by dividing the clustering factor of graph by the average path length between nodes. Uzzi explored this value in graphs of Broadway productions\cite{uzzi2005collaboration}. His findings suggest that the success of Broadway productions is greatest when teams have a good mix of new and familiar members. Productions are less likely to be successful when team members are very familiar with each other. Also, the probability of success drops much the same way when there is little familiarity between team members. This indicates that there is an optimal ratio of new and familiar members on a team -- or, an optimal value of $Q$ when related to performance. Thus, we formulate our hypothesis:\\
 
 \textit{Software Project Teams will perform best at moderate levels of $Q$. This performance, measured by the amount of interest their projects generate, will increase as the level of $Q$ increases for the contributor graph. This will continue up to an optimal $Q$ value, after which performance will begin to degrade. Thus, the performance curve given $Q$ will be inverse U-shaped, and match Uzzi's findings\cite{uzzi2005collaboration}.}
 
@@ -125,23 +125,23 @@ This metric shows us how closely related, or ``clustered,'' that the graph is. I
 \noindent\\\textit{\textbf{Clustering Coefficient - Average ($\overline{C^{\lambda}}$)}}\\
 Another approach to clustering is to take the average of each node's local clustering coefficient\cite{watts1998collective}. To calculate the local clustering coefficient of a node, we follow these steps:
 
-Given our graph of nodes $P$ connected by edges $E$, or ${G=(P,E)}$, for any given node we can determine its \textit{neighborhood} ($N_i$), or the set of nodes directly connected to a given node.
-\[ N_i = \{v_j : e_{ij} \in E \wedge e_{ji} \in E \wedge v_j \in P\} \]
+Given our graph of nodes $C$ connected by edges $E$, or ${G=(C,E)}$, for any given node we can determine its \textit{neighborhood} ($N_i$), or the set of nodes directly connected to a given node.
+\[ N_i = \{v_j : e_{ij} \in E \wedge e_{ji} \in E \wedge v_j \in C\} \]
 
 Given this \textit{neighborhood}, we can then calculate how closely connected the nodes are. To do this, we take the number of actual connections between neighbors divided by the total possible number of connections, where $k_i$ represents the count of the neighbors of a node, or {$k_i = |N_i|$}
 \[ C^{\lambda}_i = \frac{2|\{e_{jk}: v_j,v_k \in N_i, e_{jk} \in E\}|}{k_i(k_i-1)} \]
 
 From this \textit{Local Clustering Coefficient} $C^{\lambda}_i$, we can then take the average over the entire set of nodes in the graph.
-\[ \overline{C^\lambda} = \frac{1}{|P|}\sum_{i \in P}C^{\lambda}_i \]
+\[ \overline{C^\lambda} = \frac{1}{|C|}\sum_{i \in C}C^{\lambda}_i \]
 
 It is important to note that although the terminology is similar\cite{uzzi2005collaboration}, $\overline{C^\lambda}$ and $C^\Delta$ are different measurements. Unless otherwise noted, the Transitivity version of this metric ($C^\Delta$) will be used for all further calculations and metrics.
 
 \noindent\\\textit{\textbf{Average Path Length ($L$)}}\\
 Calculating the \textit{Path Length} ($L$) allowed us to determine how far removed contributors in the graph are from one another. The path length is calculated as the average distance between any two node pairs in the graph:
 
-\[L = \frac{1}{|P| \cdot (|P|-1)} \sum_{i \neq j}\lambda(v_i,v_j)\]
+\[L = \frac{1}{|C| \cdot (|C|-1)} \sum_{i \neq j}\lambda(v_i,v_j)\]
 
-Where given {$v_i \in P$}, {$v_j \in P$}, the function {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only considered path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
+Where given {$v_i \in C$}, {$v_j \in C$}, the function {$\lambda(v_i,v_j)$} denotes the shortest path between the two nodes. We only considered path length for connected subgraphs, avoiding some complexities of this calculation on disconnected graphs\cite{boccaletti2006complex}.
 
 \begin{figure}
 \centering
@@ -207,7 +207,7 @@ Finally, the ratio of the above calculations yields the small world quotient, or
 We assume throughout that any graph exhibiting {$Q > 1$} is a small world graph.
 
 \noindent\\\textit{\textbf{Performance}}\\
-To further explore the data, a measurement of project performance was needed. As the explored datasets consisted entirely of open source projects, research indicates that \textit{quality}, \textit{use}, \textit{user satisfaction}, and \textit{impact} are each possible metrics to measure performance or \textit{success}\cite{crowston2003defining}.\\
+To further explore the data, a measurement of project performance was needed. As the explored datasets consisted entirely of open source projects, research indicates that \textit{quality}, \textit{use}, \textit{user satisfaction}, and \textit{impact} are each possible metrics to measure performance or \textit{success}\cite{crowston2003defining}.
 
 For both datasets, we based our performance metric on \textit{use}. For Freecode, we used the \textit{Popularity Score} metric, which is calculated by the following formula:\footnote{http://help.freecode.com/kb/statistics/how-do-you-measure-a-projects-popularity}
 
