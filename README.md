@@ -1,0 +1,4 @@
+Abstract
+===========================
+Team cohesion and the dynamics of team formation are important parts of any project, with software projects being no exception. An interesting aspect of team building is the relationships formed between the team members. Because of these relationships, representing software team members as a graph may be a natural way to explore team dynamics. As team members move between projects, these graphs become more and more connected as team members collaborate and form new relationships. We show that this connectivity, known as the "small world effect,"
+has a positive impact on team performance when the connectivity levels are moderate. Performance degrades, however, at both very high and very low levels of connectivity. This aligns with similar research findings of non-software teams.
